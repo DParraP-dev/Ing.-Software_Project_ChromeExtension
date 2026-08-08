@@ -22,6 +22,10 @@ autofill-extension/
 │
 ├── backend/
 │   ├── src/
+│      ├── app.js
+│      ├── server.js
+│      └── config/
+│         └── database.js
 │   ├── controllers/
 │   ├── routes/
 │   ├── models/
