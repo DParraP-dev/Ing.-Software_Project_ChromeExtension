@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="Icono-FillPro.png">
+    <link rel="stylesheet" href="logstyles.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h1>Login</h1>
+            <p>Sign in to continue.</p>
+            <form action="dashboard.html" method="POST">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Jiara Martins" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="******" required>
+
+                <button type="submit" class="login-button">Log in</button>
+            </form>
+            <div class="extra-links">
+                <a href="reset-password.html">Forgot Password?</a>
+                <a href="signup.html">Sign up !</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
