@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const db = require("./config/database");
 const authRoutes = require("./routes/auth.routes");
+const profileRoutes = require("./routes/profile.routes");
 
 const app = express();
 
@@ -19,5 +20,6 @@ app.get("/", async (req, res) => {
 });
 
 app.use("/auth", authRoutes);
+app.use("/profile", profileRoutes);
 
 module.exports = app;
