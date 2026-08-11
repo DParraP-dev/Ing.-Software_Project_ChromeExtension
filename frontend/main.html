@@ -5,16 +5,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienvenido a FillPro</title>
     <link rel="icon" type="image/png" sizes="32x32" href="Icono-FillPro.png">
-    <link rel="stylesheet" href="logstyles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="mainstyles.css">
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-box">
-            <h1>Bienvenido a FillPro</h1>
-            <p>Llena tus formularios con un click.</p>
-            <button id="fillButton" class="login-button">Ingresar datos</button>
+
+    <header class="topbar">
+        <div class="topbar__brand">
+            <img src="FillPro_logo.png" alt="FillPro" class="topbar__logo">
         </div>
-    </div>
+        <button type="button" class="topbar__logout" id="logoutButton">
+            Cerrar sesión
+        </button>
+    </header>
+
+    <main class="page">
+
+        <section class="hero" aria-labelledby="hero-heading">
+            <div class="hero__ring" aria-hidden="true">
+                <svg viewBox="0 0 200 200" class="ring">
+                    <circle class="ring__track" cx="100" cy="100" r="86"></circle>
+                    <circle class="ring__progress" cx="100" cy="100" r="86" style="--progress: 0.68;"></circle>
+                </svg>
+                <div class="ring__label">
+                    <span class="ring__number">68%</span>
+                    <span class="ring__caption">perfil completo</span>
+                </div>
+            </div>
+
+            <div class="hero__copy">
+                <p class="hero__eyebrow">Hola de nuevo</p>
+                <h1 id="hero-heading" class="hero__title">
+                    Así va tu perfil hasta ahora
+                </h1>
+                <p class="hero__subtitle">
+                    Entre más completo esté, mejor va a poder FillPro
+                    autocompletar tus próximas postulaciones por ti.
+                </p>
+                <button type="button" class="btn btn--primary" id="completeProfileButton">
+                    Completar mi perfil
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M3.5 8H12.5M12.5 8L8.5 4M12.5 8L8.5 12" stroke="currentColor"
+                              stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <section class="stats" aria-label="Resumen de tu actividad">
+
+            <article class="stat-card">
+                <span class="stat-card__icon stat-card__icon--indigo" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M10 10a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM3.5 17c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"
+                              stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                <div class="stat-card__body">
+                    <p class="stat-card__value">68%</p>
+                    <p class="stat-card__label">Perfil completo</p>
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <span class="stat-card__icon stat-card__icon--mint" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M4 10.5l3.5 3.5L16 5.5" stroke="currentColor" stroke-width="1.8"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <div class="stat-card__body">
+                    <p class="stat-card__value">0</p>
+                    <p class="stat-card__label">Postulaciones este mes</p>
+                </div>
+            </article>
+
+            <article class="stat-card">
+                <span class="stat-card__icon stat-card__icon--slate" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.6"/>
+                        <path d="M10 6v4l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                <div class="stat-card__body">
+                    <p class="stat-card__value">Sin actividad</p>
+                    <p class="stat-card__label">Última postulación</p>
+                </div>
+            </article>
+
+        </section>
+
+        <section class="next-step" aria-labelledby="next-step-heading">
+            <div class="next-step__text">
+                <h2 id="next-step-heading">Siguiente paso</h2>
+                <p>Agrega tu experiencia y tus habilidades para que FillPro
+                   sepa qué información usar cuando llenes un formulario.</p>
+            </div>
+            <button type="button" class="btn btn--ghost" id="addExperienceButton">
+                Agregar experiencia
+            </button>
+        </section>
+
+    </main>
 
     <script src="main.js"></script>
 </body>
