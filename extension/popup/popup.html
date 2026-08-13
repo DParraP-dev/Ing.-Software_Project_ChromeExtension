@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FillPro</title>
+    <style>
+        :root {
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: #182033;
+            background: #f5f6fa;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 340px;
+            min-height: 300px;
+            margin: 0;
+            padding: 22px;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            color: #5956e9;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            margin: 5px 0 0;
+            color: #687288;
+            font-size: 13px;
+        }
+
+        .panel {
+            padding: 18px;
+            background: #ffffff;
+            border: 1px solid #e0e4ed;
+            border-radius: 14px;
+            box-shadow: 0 10px 28px rgba(35, 45, 75, 0.08);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        form,
+        .autofill-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        label {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 11px;
+            border: 1px solid #bac3d2;
+            border-radius: 8px;
+            font: inherit;
+        }
+
+        input:focus {
+            border-color: #5956e9;
+            outline: 3px solid rgba(89, 86, 233, 0.14);
+        }
+
+        button {
+            padding: 11px 14px;
+            border: 0;
+            border-radius: 8px;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            cursor: wait;
+            opacity: 0.65;
+        }
+
+        .primary-button {
+            color: #ffffff;
+            background: #5956e9;
+        }
+
+        .secondary-button {
+            color: #505a70;
+            background: #e9ecf3;
+        }
+
+        .autofill-copy {
+            margin: 0;
+            color: #505a70;
+            font-size: 14px;
+            line-height: 1.45;
+        }
+
+        #status {
+            min-height: 20px;
+            margin: 14px 2px 0;
+            color: #505a70;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        #status[data-type="success"] {
+            color: #137548;
+        }
+
+        #status[data-type="error"] {
+            color: #b42318;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>FillPro</h1>
+        <p class="subtitle">Tu perfil listo en un clic</p>
+    </header>
+
+    <section id="loginPanel" class="panel">
+        <form id="loginForm">
+            <label for="email">
+                Correo
+                <input id="email" name="email" type="email" autocomplete="username" required>
+            </label>
+
+            <label for="password">
+                Contraseña
+                <input id="password" name="password" type="password" autocomplete="current-password" required>
+            </label>
+
+            <button id="loginButton" class="primary-button" type="submit">
+                Iniciar sesión
+            </button>
+        </form>
+    </section>
+
+    <section id="autofillPanel" class="panel hidden">
+        <div class="autofill-panel">
+            <p class="autofill-copy">
+                Abre un formulario en la pestaña actual y pulsa el botón para completarlo con tu perfil.
+            </p>
+            <button id="autofillButton" class="primary-button" type="button">
+                Autocompletar formulario
+            </button>
+            <button id="logoutButton" class="secondary-button" type="button">
+                Cerrar sesión
+            </button>
+        </div>
+    </section>
+
+    <p id="status" role="status" aria-live="polite"></p>
+
+    <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi perfil — FillPro</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="Icono-FillPro.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="profilestyles.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <a href="main.html" class="topbar__back">← Volver</a>
+        <img src="FillPro_Logo_Alt-sinFondo.png" alt="FillPro" class="topbar__logo">
+    </header>
+
+    <main class="page">
+        <h1 class="page__title">Completa tu perfil</h1>
+        <p class="page__subtitle">
+            Esta información es la que FillPro va a usar para autocompletar
+            tus formularios de postulación.
+        </p>
+
+        <form id="profileForm" class="profile-form">
+
+            <div class="form-grid">
+                <div class="field">
+                    <label for="firstName">Nombre</label>
+                    <input type="text" id="firstName" name="firstName" placeholder="Jane">
+                </div>
+
+                <div class="field">
+                    <label for="lastName">Apellido</label>
+                    <input type="text" id="lastName" name="lastName" placeholder="Doe">
+                </div>
+
+                <div class="field">
+                    <label for="phone">Teléfono</label>
+                    <input type="tel" id="phone" name="phone" placeholder="+57 300 000 0000">
+                </div>
+
+                <div class="field">
+                    <label for="country">País</label>
+                    <input type="text" id="country" name="country" placeholder="Colombia">
+                </div>
+
+                <div class="field">
+                    <label for="city">Ciudad</label>
+                    <input type="text" id="city" name="city" placeholder="Medellín">
+                </div>
+
+                <div class="field">
+                    <label for="linkedin">LinkedIn</label>
+                    <input type="text" id="linkedin" name="linkedin" placeholder="linkedin.com/in/tu-usuario">
+                </div>
+
+                <div class="field">
+                    <label for="github">GitHub</label>
+                    <input type="text" id="github" name="github" placeholder="github.com/tu-usuario">
+                </div>
+
+                <div class="field field--full">
+                    <label for="skills">Habilidades</label>
+                    <input type="text" id="skills" name="skills" placeholder="JavaScript, SQL, React (sepáralas con comas)">
+                    <span class="field__hint">Sepáralas con comas — se guardan como una lista.</span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn--primary" id="saveProfileButton">
+                Guardar perfil
+            </button>
+
+        </form>
+    </main>
+
+    <script src="profile.js"></script>
+</body>
+</html>
