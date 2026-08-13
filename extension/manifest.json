@@ -1,0 +1,29 @@
+{
+    "manifest_version": 3,
+    "name": "FillPro",
+    "description": "Autocompleta formularios de postulación con los datos guardados en FillPro.",
+    "version": "0.1.0",
+    "permissions": [
+        "storage",
+        "activeTab"
+    ],
+    "host_permissions": [
+        "http://localhost:3000/*"
+    ],
+    "action": {
+        "default_title": "FillPro",
+        "default_popup": "popup/popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "run_at": "document_idle"
+        }
+    ]
+}
