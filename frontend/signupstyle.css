@@ -6,7 +6,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #3730A3;
+    background-color: #1E1B4B;
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -20,6 +20,7 @@ body {
     width: 100%;
     height: 100vh;
 }
+
 .login-box {
     background-color: #fff;
     border-radius: 20px;
@@ -31,13 +32,13 @@ body {
     overflow: hidden;
 }
 
-/* Estilos para las curvas */
+/* Estilos para las curvas decorativas */
 .login-box::before, .login-box::after {
     content: '';
     position: absolute;
     width: 300px;
     height: 300px;
-    border: 5px solid #3730A3;
+    border: 5px solid #1E1B4B;
     border-radius: 50%;
     opacity: 0.5;
     z-index: -1;
@@ -55,7 +56,7 @@ body {
 
 .login-box h1 {
     font-size: 2.5em;
-    color: #3730A3;
+    color: #1E1B4B;
     margin-bottom: 10px;
 }
 
@@ -83,10 +84,16 @@ body {
     border-radius: 10px;
     border: 1px solid #ccc;
     font-size: 1em;
+    transition: border-color 0.2s ease;
+}
+
+.login-box input:focus {
+    outline: none;
+    border-color: #00D46A;
 }
 
 .login-box .login-button {
-    background-color: #3730A3;
+    background-color: #1E1B4B;
     color: #fff;
     border: none;
     padding: 15px;
@@ -96,7 +103,7 @@ body {
 }
 
 .login-box .login-button:hover {
-    background-color: #4F46E5;
+    background-color: #4B2E83;
 }
 
 .extra-links {
@@ -104,7 +111,7 @@ body {
 }
 
 .extra-links a {
-    color: #333;
+    color: #1E1B4B;
     font-size: 0.9em;
     text-decoration: none;
     display: block;
@@ -112,5 +119,6 @@ body {
 }
 
 .extra-links a:hover {
+    color: #00D46A;
     text-decoration: underline;
 }

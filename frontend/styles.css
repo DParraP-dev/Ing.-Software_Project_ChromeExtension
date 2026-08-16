@@ -17,7 +17,7 @@ body {
 
 /* Estilo para el lado izquierdo (Rojo) */
 .left-side {
-    background-color: #3730A3;
+    background-color: #1E1B4B;
     color: #fff;
     width: 50%;
     display: flex;
@@ -48,8 +48,33 @@ body {
     transition: background-color 0.3s ease;
 }
 
+.registerButton {
+    background-color: #fff;
+    color: #3730A3;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
 .login-button:hover {
-    background-color: #ccc;
+    background-color: #EEF0FB;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+
+.registerButton:hover {
+    background-color: #EEF0FB;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+
+.button-group {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
 }
 
 /* Estilo para el lado derecho (Blanco) */

@@ -1,8 +1,8 @@
 :root {
-    --indigo-900: #3730A3;
-    --indigo-600: #4F46E5;
+    --indigo-900: #1E1B4B;   /* antes #3730A3 */
+    --indigo-600: #4B2E83;   /* antes #4F46E5 */
     --indigo-50:  #EEF0FB;
-    --mint-500:   #10B981;
+    --mint-500:   #00D46A;   /* antes #10B981 */
     --mint-50:    #E7F8F1;
     --slate-900:  #1E293B;
     --slate-500:  #64748B;
