@@ -1,108 +1,170 @@
-# 📖 Estándar de Desarrollo del Proyecto
+# 🖊️ FillPro
 
-Este documento define las normas de trabajo que seguirá el equipo durante el desarrollo del proyecto. El objetivo es mantener un flujo de trabajo organizado, facilitar la colaboración y reducir conflictos durante la integración del código.
+**FillPro** es una extensión de navegador (Chrome, Manifest V3) que **autocompleta formularios de postulación laboral** con los datos que el usuario guarda una sola vez en su perfil. El objetivo es ahorrar tiempo al postularse a ofertas de empleo evitando reescribir la misma información en cada formulario.
+
+El proyecto está compuesto por tres componentes que conviven en un **monorepositorio**:
+
+- **Extensión de navegador** — detecta los campos de un formulario en la página activa y los rellena.
+- **Backend (API REST)** — gestiona autenticación y almacenamiento del perfil del usuario.
+- **Frontend web** — aplicación web para registrarse, iniciar sesión y editar el perfil.
 
 ---
 
-# 📁 Arquitectura del Repositorio
+## 🧱 Stack tecnológico
 
-El proyecto estará organizado como un **monorepositorio**, donde todos los componentes del sistema convivirán en un único repositorio.
+| Componente | Tecnología |
+|------------|------------|
+| Extensión | JavaScript vanilla + Manifest V3 |
+| Backend | Node.js + Express 5 (CommonJS) |
+| Base de datos | **MySQL** (a través de `mysql2`) |
+| Autenticación | JWT (`jsonwebtoken`) + `bcrypt` |
+| Frontend web | HTML + CSS + JavaScript vanilla (sin framework) |
+
+> **Nota:** versiones anteriores de la documentación describían React y MongoDB. La implementación real usa **JavaScript vanilla** en el frontend y **MySQL** como base de datos. Este README refleja el estado actual del código.
+
+---
+
+## 📁 Estructura del repositorio
 
 ```text
-autofill-extension/
-
+Ing.-Software_Project_ChromeExtension/
 │
-├── frontend/
+├── frontend/                # Aplicación web (HTML + CSS + JS vanilla)
+│   ├── pages/               # Páginas HTML (index, login, signup, main, profile, reset-password)
+│   ├── js/                  # Scripts (app, login, signup, main, profile)
+│   ├── css/                 # Hojas de estilo
+│   └── assets/              # Logos, íconos e imágenes
+│
+├── backend/                 # API REST (Node.js + Express)
 │   ├── src/
-│   ├── public/
-│   ├── components/
-│   ├── pages/
-│   ├── services/
+│   │   ├── app.js           # Configuración de la app Express (middleware + rutas)
+│   │   ├── server.js        # Punto de arranque del servidor
+│   │   ├── config/
+│   │   │   └── database.js   # Pool de conexión a MySQL
+│   │   ├── middleware/
+│   │   │   └── auth.middleware.js   # Verificación de token JWT
+│   │   └── routes/
+│   │       ├── auth.routes.js       # /auth/register y /auth/login
+│   │       └── profile.routes.js    # /profile (obtener y guardar)
+│   ├── database/
+│   │   └── schema.sql       # Definición de las tablas MySQL
 │   └── package.json
 │
-├── backend/
-│   ├── src/
-│   ├── controllers/
-│   ├── routes/
-│   ├── models/
-│   ├── middleware/
-│   ├── services/
-│   └── package.json
-│
-├── extension/
+├── extension/               # Extensión de navegador (Manifest V3)
 │   ├── manifest.json
-│   ├── popup/
-│   ├── content/
-│   ├── background/
-│   ├── utils/
-│   └── assets/
+│   ├── content.js           # Content script: detecta y rellena campos del formulario
+│   ├── popup/               # UI del popup (login + botón de autocompletar)
+│   └── test-form.html       # Formulario de prueba para validar el autocompletado
 │
-├── docs/
-│   ├── architecture/
-│   ├── api/
-│   ├── sprint/
-│   ├── backlog/
-│   └── diagrams/
+├── docs/                    # Documentación del proyecto
+│   ├── api/                 # Contrato de la API y modelos de datos
+│   └── database/            # Esquema de la base de datos
 │
 ├── .gitignore
-├── README.md
-└── LICENSE
+└── README.md
 ```
 
-## Responsabilidad de cada carpeta
+### Responsabilidad de cada carpeta
 
-### `/frontend`
-
-Contiene la aplicación desarrollada en React.
-
-Incluye:
-
-- Login
-- Registro
-- Dashboard
-- Gestión del perfil
-- Historial de acciones
+- **`/frontend`** — Interfaz web: registro, inicio de sesión, dashboard y gestión del perfil. HTML/CSS/JS vanilla, sin bundler.
+- **`/backend`** — API REST: autenticación con JWT, hash de contraseñas con bcrypt y persistencia del perfil en MySQL.
+- **`/extension`** — Extensión de navegador: popup para iniciar sesión y disparar el autocompletado, más el content script que rellena los formularios.
+- **`/docs`** — Documentación: contrato de la API, modelos de datos y esquema de base de datos.
 
 ---
 
-### `/backend`
+## ✅ Estado actual (implementado)
 
-Contiene la API desarrollada con Node.js.
-
-Incluye:
-
-- Endpoints REST
-- Autenticación
-- Lógica de negocio
-- Comunicación con MongoDB
-
----
-
-### `/extension`
-
-Contiene el código de la extensión del navegador.
-
-Incluye:
-
-- Manifest
-- Popup
-- Content Scripts
-- Background Scripts
-- Utilidades
+| Funcionalidad | Estado |
+|---------------|--------|
+| Registro de usuario (`POST /auth/register`) | ✅ Implementado |
+| Inicio de sesión (`POST /auth/login`) | ✅ Implementado |
+| Obtener perfil (`GET /profile`) | ✅ Implementado |
+| Guardar / actualizar perfil (`POST /profile`) | ✅ Implementado |
+| Autocompletado de formularios (extensión) | ✅ Implementado |
+| Historial de autocompletados (`/logs`) | 🚧 Planeado (tablas en el esquema, sin endpoints aún) |
+| Recuperación de contraseña | 🚧 Planeado (existe la página, sin backend) |
 
 ---
 
-### `/docs`
+## 🚀 Puesta en marcha
 
-Contiene toda la documentación del proyecto.
+### Requisitos previos
 
-Ejemplos:
+- [Node.js](https://nodejs.org/) (versión 18 o superior recomendada)
+- [MySQL](https://www.mysql.com/) instalado y en ejecución
+- Un navegador basado en Chromium (Chrome, Edge, Brave) para cargar la extensión
 
-- Arquitectura
-- Contratos de la API
-- Diagramas
-- Sprint Backlogs
-- Decisiones técnicas
+### 1. Base de datos
+
+Ejecuta el script de esquema en tu instalación local de MySQL. Crea la base de datos `fillpro_db` con sus 5 tablas (`users`, `profiles`, `knowledge`, `logs`, `log_fields`):
+
+```bash
+mysql -u root -p < backend/database/schema.sql
+```
+
+> También puedes abrir `backend/database/schema.sql` en MySQL Workbench y ejecutar todo el script de una vez.
+
+### 2. Backend
+
+```bash
+cd backend
+npm install
+```
+
+Crea un archivo `.env` dentro de `backend/` con tus credenciales (ver la sección [Variables de entorno](#-variables-de-entorno)):
+
+```bash
+npm run dev    # con recarga automática (nodemon)
+# o
+npm start      # ejecución normal
+```
+
+El servidor arranca en `http://localhost:3000`. Puedes verificarlo abriendo esa URL: responde con un JSON confirmando que la API y la base de datos están conectadas.
+
+### 3. Frontend web
+
+El frontend es HTML/JS estático. Ábrelo con cualquier servidor estático (por ejemplo, la extensión Live Server, o `python -m http.server`) apuntando a la carpeta `frontend/`, y navega a `pages/index.html`.
+
+> El frontend hace peticiones a `http://localhost:3000`, así que el backend debe estar corriendo.
+
+### 4. Extensión
+
+1. Abre `chrome://extensions` en tu navegador.
+2. Activa el **Modo desarrollador**.
+3. Haz clic en **Cargar descomprimida** y selecciona la carpeta `extension/`.
+4. Ancla la extensión y ábrela para iniciar sesión y probar el autocompletado (puedes usar `extension/test-form.html` como formulario de prueba).
+
+---
+
+## 🔑 Variables de entorno
+
+El backend lee su configuración desde un archivo `.env` en `backend/` (cargado con `dotenv`):
+
+| Variable | Descripción | Ejemplo |
+|----------|-------------|---------|
+| `DB_HOST` | Host de MySQL | `localhost` |
+| `DB_USER` | Usuario de MySQL | `root` |
+| `DB_PASSWORD` | Contraseña de MySQL | `tu_contraseña` |
+| `DB_NAME` | Nombre de la base de datos | `fillpro_db` |
+| `DB_PORT` | Puerto de MySQL | `3306` |
+| `JWT_SECRET` | Clave secreta para firmar los tokens JWT | `una_clave_larga_y_secreta` |
+
+> El servidor escucha en el puerto `3000`.
+
+---
+
+## 🔌 Endpoints de la API
+
+| Método | Ruta | Descripción | Auth |
+|--------|------|-------------|------|
+| `GET` | `/` | Health check (API + conexión a la base de datos) | No |
+| `POST` | `/auth/register` | Registrar un nuevo usuario | No |
+| `POST` | `/auth/login` | Iniciar sesión y obtener un token JWT | No |
+| `GET` | `/profile` | Obtener el perfil del usuario autenticado | Sí (JWT) |
+| `POST` | `/profile` | Crear o actualizar el perfil del usuario autenticado | Sí (JWT) |
+
+El contrato detallado (request/response) está en [`docs/api/endpoints.md`](docs/api/endpoints.md).
 
 ---
 
