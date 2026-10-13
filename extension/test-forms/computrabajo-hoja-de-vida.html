@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réplica Computrabajo — Hoja de vida | FillPro</title>
+    <!--
+        Réplica simplificada de los formularios de hoja de vida de portales
+        latinoamericanos (Computrabajo, elempleo). Incluye selects con rangos de
+        experiencia y salario, tipo de documento, fecha en dd/mm/aaaa, un campo
+        sin <label for> (solo texto cercano), "Nombre de la empresa" (no es el
+        nombre del candidato), una sección de referencias (no debe completarse)
+        y el buscador del encabezado (no debe tocarse).
+    -->
+    <style>
+        body { margin: 0; font-family: system-ui, sans-serif; background: #f2f4f7; color: #1f2937; }
+        header { padding: 12px 24px; background: #0b5ca8; }
+        header input { padding: 8px; margin-right: 8px; }
+        main { width: min(760px, 94vw); margin: 28px auto; padding: 28px; background: #fff; border-radius: 12px; }
+        h2 { margin: 28px 0 14px; font-size: 18px; color: #0b5ca8; }
+        .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+        .field label, .field .label { font-size: 14px; font-weight: 600; }
+        input, select, textarea { padding: 9px 10px; border: 1px solid #c3cad5; border-radius: 6px; font: inherit; }
+        button { padding: 11px 18px; border: 0; border-radius: 6px; background: #f39200; color: #fff; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <header>
+        <form role="search" action="/trabajo-de">
+            <input id="prof-cat-search-input" type="text" placeholder="Cargo o categoría">
+            <input id="place-search-input" type="text" placeholder="Lugar">
+        </form>
+    </header>
+
+    <main>
+        <h1>Mi hoja de vida</h1>
+        <form id="cvForm">
+            <h2>Datos personales</h2>
+            <div class="field">
+                <label for="Name">Nombre</label>
+                <input id="Name" name="Name" type="text">
+            </div>
+            <div class="field">
+                <label for="Surname">Apellidos</label>
+                <input id="Surname" name="Surname" type="text">
+            </div>
+            <div class="field">
+                <label for="Email">Correo electrónico</label>
+                <input id="Email" name="Email" type="email">
+            </div>
+            <div class="field">
+                <span class="label">Teléfono celular</span>
+                <input name="Phone1" type="tel">
+            </div>
+            <div class="field">
+                <label for="IdentificationType">Tipo de documento</label>
+                <select id="IdentificationType" name="IdentificationType">
+                    <option value="">Selecciona</option>
+                    <option value="1">Cédula de Extranjería</option>
+                    <option value="2">Cédula de Ciudadanía</option>
+                    <option value="3">Pasaporte</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="IdentificationNumber">Número de documento</label>
+                <input id="IdentificationNumber" name="IdentificationNumber" type="text">
+            </div>
+            <div class="field">
+                <label for="BirthDate">Fecha de nacimiento</label>
+                <input id="BirthDate" name="BirthDate" type="text" placeholder="dd/mm/aaaa">
+            </div>
+
+            <h2>Ubicación</h2>
+            <div class="field">
+                <label for="CountryId">País</label>
+                <select id="CountryId" name="CountryId">
+                    <option value="">Selecciona</option>
+                    <option value="52">México</option>
+                    <option value="57">Colombia</option>
+                    <option value="51">Perú</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="LocationId">Departamento</label>
+                <select id="LocationId" name="LocationId">
+                    <option value="">Selecciona</option>
+                    <option value="5">Antioquia</option>
+                    <option value="11">Bogotá, D.C.</option>
+                    <option value="25">Cundinamarca</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="City">Ciudad / Municipio</label>
+                <input id="City" name="City" type="text">
+            </div>
+            <div class="field">
+                <label for="Address">Dirección</label>
+                <input id="Address" name="Address" type="text">
+            </div>
+
+            <h2>Experiencia laboral</h2>
+            <div class="field">
+                <label for="JobTitle">Cargo</label>
+                <input id="JobTitle" name="JobTitle" type="text">
+            </div>
+            <div class="field">
+                <label for="CompanyName">Nombre de la empresa</label>
+                <input id="CompanyName" name="CompanyName" type="text">
+            </div>
+            <div class="field">
+                <label for="ExperienceYears">Años de experiencia</label>
+                <select id="ExperienceYears" name="ExperienceYears">
+                    <option value="">Selecciona</option>
+                    <option value="0">Sin experiencia</option>
+                    <option value="1">Menos de 1 año</option>
+                    <option value="2">1 a 2 años</option>
+                    <option value="3">3 a 5 años</option>
+                    <option value="4">6 a 10 años</option>
+                    <option value="5">Más de 10 años</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="Salary">Salario deseado</label>
+                <select id="Salary" name="Salary">
+                    <option value="">Selecciona</option>
+                    <option value="1">Menos de $1.000.000</option>
+                    <option value="2">$1.000.000 - $2.000.000</option>
+                    <option value="3">$2.000.000 - $3.500.000</option>
+                    <option value="4">$3.500.000 - $5.000.000</option>
+                    <option value="5">Más de $5.000.000</option>
+                </select>
+            </div>
+
+            <h2>Educación</h2>
+            <div class="field">
+                <label for="StudyLevel">Nivel de estudios</label>
+                <select id="StudyLevel" name="StudyLevel">
+                    <option value="">Selecciona</option>
+                    <option value="1">Bachillerato</option>
+                    <option value="2">Técnico</option>
+                    <option value="3">Tecnólogo</option>
+                    <option value="4">Universitario</option>
+                    <option value="5">Especialización</option>
+                    <option value="6">Maestría</option>
+                    <option value="7">Doctorado</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="Institution">Institución educativa</label>
+                <input id="Institution" name="Institution" type="text">
+            </div>
+            <div class="field">
+                <label for="Degree">Título obtenido</label>
+                <input id="Degree" name="Degree" type="text">
+            </div>
+            <div class="field">
+                <label for="Languages">Idiomas</label>
+                <input id="Languages" name="Languages" type="text">
+            </div>
+            <div class="field">
+                <label for="Knowledge">Conocimientos</label>
+                <input id="Knowledge" name="Knowledge" type="text">
+            </div>
+            <div class="field">
+                <label for="Presentation">Presentación</label>
+                <textarea id="Presentation" name="Presentation" rows="4"></textarea>
+            </div>
+
+            <h2>Referencias personales</h2>
+            <div class="field">
+                <label for="RefName">Nombre</label>
+                <input id="RefName" name="RefName" type="text">
+            </div>
+            <div class="field">
+                <label for="RefPhone">Teléfono</label>
+                <input id="RefPhone" name="RefPhone" type="tel">
+            </div>
+
+            <button type="button">Guardar hoja de vida</button>
+        </form>
+    </main>
+</body>
+</html>
