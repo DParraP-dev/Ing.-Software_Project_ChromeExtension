@@ -30,17 +30,45 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- ------------------------------------------------------------
 -- profiles: datos del perfil laboral, uno por usuario
+-- Los campos siguen los formularios más comunes de portales de
+-- empleo (LinkedIn, Computrabajo, elempleo, ATS) — HU-RNF-011.
+-- Si ya tienes la base creada, ejecuta en su lugar:
+--   database/migrations/001_hu_rnf_011_profile_fields.sql
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS profiles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
+    -- Datos personales
     first_name VARCHAR(100),
     last_name VARCHAR(100),
+    email VARCHAR(150),
     phone VARCHAR(20),
+    document_type VARCHAR(10),
+    document_number VARCHAR(30),
+    birth_date DATE,
+    -- Ubicación
     country VARCHAR(100),
+    state VARCHAR(100),
     city VARCHAR(100),
+    address VARCHAR(255),
+    postal_code VARCHAR(20),
+    -- Perfil profesional / experiencia
+    headline VARCHAR(150),
+    summary TEXT,
+    current_title VARCHAR(150),
+    current_company VARCHAR(150),
+    years_experience TINYINT UNSIGNED,
+    salary_expectation INT UNSIGNED,
+    -- Educación
+    education_level VARCHAR(30),
+    institution VARCHAR(150),
+    field_of_study VARCHAR(150),
+    graduation_year SMALLINT UNSIGNED,
+    languages VARCHAR(255),
+    -- Enlaces
     linkedin VARCHAR(255),
     github VARCHAR(255),
+    portfolio VARCHAR(255),
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
