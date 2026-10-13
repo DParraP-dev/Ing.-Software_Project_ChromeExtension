@@ -2,20 +2,59 @@
 
 Este documento define el contrato de comunicación entre el Frontend, la Extensión y el Backend.
 
-# Endpoints para Sprint 1 (pueden cambiar)
+> **Base URL (desarrollo):** `http://localhost:3000`
 
-| Endpoint | Estado |
-|----------|--------|
-| POST /auth/register |
-| POST /auth/login |
-| GET /profile |
-| PUT /profile |
-| POST /logs |
-| GET /logs |
+## Endpoints implementados
+
+| Método | Endpoint | Auth | Estado |
+|--------|----------|------|--------|
+| `GET` | `/` | No | ✅ Implementado |
+| `POST` | `/auth/register` | No | ✅ Implementado |
+| `POST` | `/auth/login` | No | ✅ Implementado |
+| `GET` | `/profile` | Sí (JWT) | ✅ Implementado |
+| `POST` | `/profile` | Sí (JWT) | ✅ Implementado |
+
+## Endpoints planeados (aún no implementados)
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| `POST` | `/logs` | Registrar un autocompletado |
+| `GET` | `/logs` | Obtener el historial de autocompletados |
 
 > **Importante**
 >
 > Este documento representa un contrato entre los diferentes componentes del sistema. Cualquier modificación en un endpoint deberá ser comunicada y aprobada por el equipo antes de implementarse.
+
+---
+
+# 0. Health check
+
+## Endpoint
+
+```http
+GET /
+```
+
+## Descripción
+
+Comprueba que el servidor y la conexión a la base de datos funcionan.
+
+## Response Exitosa (200)
+
+```json
+{
+    "message": "API funcionando correctamente",
+    "database": "conectada"
+}
+```
+
+## Posibles errores
+
+| Código | Descripción |
+|--------|-------------|
+| 500 | El servidor responde pero la base de datos falló |
+
+---
 
 # 1. Registrar usuario
 
@@ -29,8 +68,6 @@ POST /auth/register
 
 Permite registrar un nuevo usuario en el sistema.
 
----
-
 ## Request
 
 ```json
@@ -40,24 +77,20 @@ Permite registrar un nuevo usuario en el sistema.
 }
 ```
 
----
-
 ## Response Exitosa (201)
 
 ```json
 {
-    "success": true,
-    "message": "Usuario registrado correctamente."
+    "message": "Usuario creado correctamente",
+    "userId": 1
 }
 ```
-
----
 
 ## Posibles errores
 
 | Código | Descripción |
-|---------|-------------|
-| 400 | Datos inválidos |
+|--------|-------------|
+| 400 | Correo y contraseña son obligatorios |
 | 409 | El correo ya se encuentra registrado |
 | 500 | Error interno del servidor |
 
@@ -73,9 +106,7 @@ POST /auth/login
 
 ## Descripción
 
-Permite autenticar un usuario y generar un token JWT.
-
----
+Permite autenticar un usuario y generar un token JWT. El token expira en **2 horas**.
 
 ## Request
 
@@ -86,29 +117,22 @@ Permite autenticar un usuario y generar un token JWT.
 }
 ```
 
----
-
 ## Response Exitosa (200)
 
 ```json
 {
-    "success": true,
+    "message": "Login exitoso",
     "token": "JWT_TOKEN",
-    "user": {
-        "_id": "...",
-        "email": "usuario@email.com"
-    }
+    "userId": 1
 }
 ```
-
----
 
 ## Posibles errores
 
 | Código | Descripción |
-|---------|-------------|
-| 401 | Credenciales incorrectas |
-| 404 | Usuario no encontrado |
+|--------|-------------|
+| 400 | Correo y contraseña son obligatorios |
+| 401 | Credenciales inválidas |
 | 500 | Error interno |
 
 ---
@@ -123,69 +147,90 @@ GET /profile
 
 ## Descripción
 
-Obtiene toda la información del perfil del usuario autenticado.
-
----
+Obtiene la información del perfil del usuario autenticado. Si el usuario todavía no tiene un perfil creado, `profile` es `null` y `skills` es un arreglo vacío (respuesta con estado 200). `accountEmail` es el correo de la cuenta, usado como respaldo cuando el perfil no tiene correo de contacto.
 
 ## Headers
 
 ```http
 Authorization: Bearer JWT_TOKEN
 ```
-
----
 
 ## Response Exitosa (200)
 
 ```json
 {
-    "firstName": "Juan",
-    "lastName": "Pérez",
-    "phone": "3001234567",
-    "country": "Colombia",
-    "city": "Medellín",
-    "linkedin": "https://linkedin.com/in/juan",
-    "github": "juanperez",
-    "knowledge": [
-        "Java",
-        "Node.js"
-    ]
+    "profile": {
+        "id": 1,
+        "user_id": 1,
+        "first_name": "Juan",
+        "last_name": "Pérez",
+        "email": "juan@email.com",
+        "phone": "+57 3001234567",
+        "document_type": "CC",
+        "document_number": "1020304050",
+        "birth_date": "1995-05-10",
+        "country": "Colombia",
+        "state": "Antioquia",
+        "city": "Medellín",
+        "address": "Calle 10 # 20-30",
+        "postal_code": "050001",
+        "headline": "Desarrollador Full Stack",
+        "summary": "Desarrollador con 4 años de experiencia...",
+        "current_title": "Desarrollador Backend",
+        "current_company": "Acme S.A.S.",
+        "years_experience": 4,
+        "salary_expectation": 4500000,
+        "education_level": "universitario",
+        "institution": "Universidad Nacional de Colombia",
+        "field_of_study": "Ingeniería de Sistemas",
+        "graduation_year": 2019,
+        "languages": "Español (nativo), Inglés (B2)",
+        "linkedin": "https://linkedin.com/in/juan",
+        "github": "juanperez",
+        "portfolio": "https://juan.dev",
+        "updated_at": "2026-09-25T15:20:00.000Z"
+    },
+    "skills": ["Java", "Node.js"],
+    "accountEmail": "usuario@email.com"
 }
 ```
 
----
+## Response Exitosa sin perfil (200)
+
+```json
+{
+    "profile": null,
+    "skills": [],
+    "accountEmail": "usuario@email.com"
+}
+```
 
 ## Posibles errores
 
 | Código | Descripción |
-|---------|-------------|
-| 401 | Token inválido |
-| 403 | Usuario no autorizado |
-| 404 | Perfil no encontrado |
+|--------|-------------|
+| 401 | No se proporcionó token / token mal formado / token inválido o expirado |
+| 500 | Error interno |
 
 ---
 
-# 4. Actualizar perfil
+# 4. Guardar (crear o actualizar) perfil
 
 ## Endpoint
 
 ```http
-PUT /profile
+POST /profile
 ```
 
 ## Descripción
 
-Permite crear o actualizar la información del perfil del usuario.
-
----
+Crea el perfil del usuario si no existe, o lo actualiza si ya existe (upsert). Las habilidades (`skills`) se reemplazan por completo en cada guardado. Los campos ausentes o vacíos se guardan como `NULL`. Las reglas de validación están en `backend/src/models/profile.fields.js`.
 
 ## Headers
 
 ```http
 Authorization: Bearer JWT_TOKEN
 ```
-
----
 
 ## Request
 
@@ -193,42 +238,67 @@ Authorization: Bearer JWT_TOKEN
 {
     "firstName": "Juan",
     "lastName": "Pérez",
-    "phone": "3001234567",
+    "email": "juan@email.com",
+    "phone": "+57 3001234567",
+    "documentType": "CC",
+    "documentNumber": "1020304050",
+    "birthDate": "1995-05-10",
     "country": "Colombia",
+    "state": "Antioquia",
     "city": "Medellín",
+    "address": "Calle 10 # 20-30",
+    "postalCode": "050001",
+    "headline": "Desarrollador Full Stack",
+    "summary": "Desarrollador con 4 años de experiencia...",
+    "currentTitle": "Desarrollador Backend",
+    "currentCompany": "Acme S.A.S.",
+    "yearsExperience": 4,
+    "salaryExpectation": 4500000,
+    "educationLevel": "universitario",
+    "institution": "Universidad Nacional de Colombia",
+    "fieldOfStudy": "Ingeniería de Sistemas",
+    "graduationYear": 2019,
+    "languages": "Español (nativo), Inglés (B2)",
     "linkedin": "https://linkedin.com/in/juan",
     "github": "juanperez",
-    "knowledge": [
-        "Java",
-        "Node.js"
-    ]
+    "portfolio": "https://juan.dev",
+    "skills": ["Java", "Node.js"]
 }
 ```
-
----
 
 ## Response Exitosa (200)
 
 ```json
 {
-    "success": true,
-    "message": "Perfil actualizado correctamente."
+    "message": "Perfil guardado correctamente"
 }
 ```
 
----
+## Valores permitidos
+
+| Campo | Regla |
+|-------|-------|
+| `documentType` | `CC`, `CE`, `TI`, `PA`, `PPT`, `DNI`, `RUT`, `CURP`, `OTRO` |
+| `educationLevel` | `bachillerato`, `tecnico`, `tecnologo`, `universitario`, `especializacion`, `maestria`, `doctorado` |
+| `birthDate` | `AAAA-MM-DD` |
+| `yearsExperience` | Entero 0–70 |
+| `graduationYear` | Entero 1950–2100 |
+| `salaryExpectation` | Entero ≥ 0 (moneda local, mensual) |
+| `email` | Correo válido |
 
 ## Posibles errores
 
 | Código | Descripción |
-|---------|-------------|
-| 400 | Datos inválidos |
-| 401 | Token inválido |
+|--------|-------------|
+| 400 | Algún campo no cumple las reglas (el mensaje indica cuáles) |
+| 401 | No se proporcionó token / token mal formado / token inválido o expirado |
 | 500 | Error interno |
 
 ---
 
-# 5. Registrar autocompletado
+# 5. (Planeado) Registrar autocompletado
+
+> 🚧 **No implementado todavía.** Las tablas `logs` y `log_fields` ya existen en el esquema de base de datos, pero este endpoint aún no está desarrollado. El diseño propuesto es el siguiente:
 
 ## Endpoint
 
@@ -236,76 +306,26 @@ Authorization: Bearer JWT_TOKEN
 POST /logs
 ```
 
-## Descripción
-
-Registra en la bitácora una acción de autocompletado realizada por la extensión.
-
----
-
-## Headers
-
-```http
-Authorization: Bearer JWT_TOKEN
-```
-
----
-
 ## Request
 
 ```json
 {
     "website": "https://ejemplo.com",
-    "fieldsCompleted": [
-        "Nombre",
-        "Correo",
-        "Teléfono"
-    ]
+    "fieldsCompleted": ["Nombre", "Correo", "Teléfono"]
 }
 ```
 
 ---
 
-## Response Exitosa (201)
+# 6. (Planeado) Obtener historial
 
-```json
-{
-    "success": true,
-    "message": "Registro almacenado correctamente."
-}
-```
-
----
-
-## Posibles errores
-
-| Código | Descripción |
-|---------|-------------|
-| 401 | Token inválido |
-| 500 | Error interno |
-
----
-
-# 6. Obtener historial
+> 🚧 **No implementado todavía.** Diseño propuesto:
 
 ## Endpoint
 
 ```http
 GET /logs
 ```
-
-## Descripción
-
-Obtiene el historial de autocompletados realizados por el usuario autenticado.
-
----
-
-## Headers
-
-```http
-Authorization: Bearer JWT_TOKEN
-```
-
----
 
 ## Response Exitosa (200)
 
@@ -314,31 +334,10 @@ Authorization: Bearer JWT_TOKEN
     {
         "website": "https://linkedin.com",
         "date": "2026-08-07T15:20:00Z",
-        "fieldsCompleted": [
-            "Nombre",
-            "Correo"
-        ]
-    },
-    {
-        "website": "https://workday.com",
-        "date": "2026-08-06T18:10:00Z",
-        "fieldsCompleted": [
-            "Nombre",
-            "Ciudad",
-            "LinkedIn"
-        ]
+        "fieldsCompleted": ["Nombre", "Correo"]
     }
 ]
 ```
-
----
-
-## Posibles errores
-
-| Código | Descripción |
-|---------|-------------|
-| 401 | Token inválido |
-| 500 | Error interno |
 
 ---
 
@@ -348,9 +347,18 @@ Authorization: Bearer JWT_TOKEN
 
 Todos los endpoints, excepto:
 
+- `GET /`
 - `POST /auth/register`
 - `POST /auth/login`
 
-requieren un token JWT válido.
+requieren un token JWT válido en el header `Authorization: Bearer <token>`.
 
----
+## Formato de errores
+
+Los errores se devuelven con el siguiente formato:
+
+```json
+{
+    "error": "Descripción del error"
+}
+```
