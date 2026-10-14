@@ -5,8 +5,23 @@ if (!token) {
     window.location.href = 'login.html';
 }
 
-// Al cargar la página, intenta traer el perfil que ya exista (si es la
-// primera vez, el backend responde profile: null y el form queda vacío)
+// Lista de los campos evaluados para el porcentaje de completitud
+const profileFieldIds = ['firstName', 'lastName', 'phone', 'country', 'city', 'linkedin', 'github', 'skills'];
+
+function calcularYGuardarProgreso() {
+    let filledCount = 0;
+    profileFieldIds.forEach(id => {
+        const input = document.getElementById(id);
+        if (input && input.value && input.value.trim() !== '') {
+            filledCount++;
+        }
+    });
+
+    const porcentaje = Math.round((filledCount / profileFieldIds.length) * 100);
+    localStorage.setItem('profileProgress', porcentaje);
+}
+
+// Al cargar la página, intenta traer el perfil que ya exista
 window.addEventListener('DOMContentLoaded', async () => {
     try {
         const res = await fetch('http://localhost:3000/profile', {
@@ -31,11 +46,22 @@ window.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('city').value = data.profile.city || '';
             document.getElementById('linkedin').value = data.profile.linkedin || '';
             document.getElementById('github').value = data.profile.github || '';
-            document.getElementById('skills').value = data.skills.join(', ');
+            document.getElementById('skills').value = data.skills ? data.skills.join(', ') : '';
         }
+
+        // Calcular y sincronizar el progreso apenas carguen los datos
+        calcularYGuardarProgreso();
 
     } catch (err) {
         console.error('No se pudo cargar el perfil existente', err);
+    }
+});
+
+// Escuchar cambios en tiempo real en cada input para actualizar el progreso al instante
+profileFieldIds.forEach(id => {
+    const input = document.getElementById(id);
+    if (input) {
+        input.addEventListener('input', calcularYGuardarProgreso);
     }
 });
 
@@ -55,6 +81,9 @@ document.getElementById('profileForm').addEventListener('submit', async (e) => {
         .split(',')
         .map(skill => skill.trim())
         .filter(skill => skill.length > 0);
+
+    // Asegurar que el progreso quede actualizado antes de enviar
+    calcularYGuardarProgreso();
 
     try {
         const res = await fetch('http://localhost:3000/profile', {
