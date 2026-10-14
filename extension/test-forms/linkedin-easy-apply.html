@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réplica LinkedIn Easy Apply | FillPro</title>
+    <!--
+        Réplica simplificada del modal "Easy Apply" de LinkedIn para probar FillPro.
+        Reproduce los patrones reales: ids largos generados (…-phoneNumber-nationalNumber),
+        select de indicativo "Colombia (+57)", select de correo con "Select an option",
+        typeahead de ciudad, una pregunta de años de experiencia CON una tecnología
+        (no debe completarse) y el buscador global fuera del modal (no debe tocarse).
+    -->
+    <style>
+        body { margin: 0; font-family: system-ui, sans-serif; background: #f4f2ee; color: #1d2226; }
+        header { padding: 12px 24px; background: #fff; border-bottom: 1px solid #ddd; }
+        header input { width: 280px; padding: 8px; }
+        .artdeco-modal { width: min(560px, 92vw); margin: 32px auto; padding: 24px; background: #fff; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,.15); }
+        .fb-dash-form-element { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        label { font-size: 14px; font-weight: 600; }
+        input, select { padding: 8px 10px; border: 1px solid #8c8c8c; border-radius: 4px; font: inherit; }
+        fieldset { border: 0; padding: 0; margin: 0 0 16px; }
+        button { padding: 10px 18px; border: 0; border-radius: 20px; background: #0a66c2; color: #fff; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <header>
+        <input class="search-global-typeahead__input" type="text" role="combobox" aria-label="Search" placeholder="Search">
+    </header>
+
+    <div class="jobs-easy-apply-modal artdeco-modal" role="dialog" aria-modal="true" aria-labelledby="jobs-apply-header">
+        <h2 id="jobs-apply-header">Apply to Acme Corp</h2>
+        <form>
+            <h3>Contact info</h3>
+
+            <div class="fb-dash-form-element">
+                <label for="single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-111-firstName">First name</label>
+                <input id="single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-111-firstName" class="artdeco-text-input--input" type="text" required>
+            </div>
+
+            <div class="fb-dash-form-element">
+                <label for="single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-112-lastName">Last name</label>
+                <input id="single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-112-lastName" class="artdeco-text-input--input" type="text" required>
+            </div>
+
+            <div class="fb-dash-form-element">
+                <label for="text-entity-list-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-113-multipleChoice"><span>Email address</span></label>
+                <select id="text-entity-list-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-113-multipleChoice" required>
+                    <option value="Select an option">Select an option</option>
+                    <option value="juan.perez@correo.com">juan.perez@correo.com</option>
+                    <option value="otro@correo.com">otro@correo.com</option>
+                </select>
+            </div>
+
+            <div class="fb-dash-form-element">
+                <label for="text-entity-list-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-114-phoneNumber-country"><span>Phone country code</span></label>
+                <select id="text-entity-list-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-114-phoneNumber-country" required>
+                    <option value="Select an option">Select an option</option>
+                    <option value="Argentina (+54)">Argentina (+54)</option>
+                    <option value="Colombia (+57)">Colombia (+57)</option>
+                    <option value="Mexico (+52)">Mexico (+52)</option>
+                    <option value="United States (+1)">United States (+1)</option>
+                </select>
+            </div>
+
+            <div class="fb-dash-form-element">
+                <label for="single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-114-phoneNumber-nationalNumber">Mobile phone number</label>
+                <input id="single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-114-phoneNumber-nationalNumber" class="artdeco-text-input--input" type="text" required>
+            </div>
+
+            <div class="fb-dash-form-element">
+                <label for="single-typeahead-entity-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-115-city-HOME-CITY">Location (city)</label>
+                <input id="single-typeahead-entity-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-115-city-HOME-CITY" role="combobox" aria-autocomplete="list" type="text" autocomplete="off">
+            </div>
+
+            <h3>Additional questions</h3>
+
+            <div class="fb-dash-form-element">
+                <label for="single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-116-numeric">How many years of work experience do you have with JavaScript?</label>
+                <input id="single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-116-numeric" type="text">
+            </div>
+
+            <div class="fb-dash-form-element">
+                <label for="single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-117-text">LinkedIn Profile</label>
+                <input id="single-line-text-form-component-formElement-urn-li-jobs-applyformcommon-easyApplyFormElement-4012345678-117-text" type="text">
+            </div>
+
+            <fieldset>
+                <legend>Are you legally authorized to work in Colombia?</legend>
+                <label><input type="radio" name="authorized" value="Yes"> Yes</label>
+                <label><input type="radio" name="authorized" value="No"> No</label>
+            </fieldset>
+
+            <button type="button">Next</button>
+        </form>
+    </div>
+</body>
+</html>

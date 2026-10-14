@@ -45,6 +45,25 @@ Datos del perfil laboral, uno por usuario.
 | `city` | VARCHAR(100) | |
 | `linkedin` | VARCHAR(255) | |
 | `github` | VARCHAR(255) | |
+| `email` | VARCHAR(150) | Correo de contacto (puede diferir del de la cuenta) |
+| `document_type` | VARCHAR(10) | `CC`, `CE`, `TI`, `PA`, `PPT`, `DNI`, `RUT`, `CURP`, `OTRO` |
+| `document_number` | VARCHAR(30) | |
+| `birth_date` | DATE | Se devuelve como `AAAA-MM-DD` |
+| `state` | VARCHAR(100) | Departamento / estado / provincia |
+| `address` | VARCHAR(255) | |
+| `postal_code` | VARCHAR(20) | |
+| `headline` | VARCHAR(150) | Titular profesional |
+| `summary` | TEXT | Resumen / acerca de mí |
+| `current_title` | VARCHAR(150) | Cargo actual o más reciente |
+| `current_company` | VARCHAR(150) | Empresa actual o más reciente |
+| `years_experience` | TINYINT UNSIGNED | |
+| `salary_expectation` | INT UNSIGNED | Aspiración salarial mensual |
+| `education_level` | VARCHAR(30) | `bachillerato` … `doctorado` |
+| `institution` | VARCHAR(150) | |
+| `field_of_study` | VARCHAR(150) | Título / área de estudio |
+| `graduation_year` | SMALLINT UNSIGNED | |
+| `languages` | VARCHAR(255) | |
+| `portfolio` | VARCHAR(255) | Portafolio / sitio web |
 | `updated_at` | TIMESTAMP | ON UPDATE CURRENT_TIMESTAMP |
 
 ---

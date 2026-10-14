@@ -24,50 +24,196 @@
             tus formularios de postulación.
         </p>
 
-        <form id="profileForm" class="profile-form">
+        <aside class="compat-note" aria-label="Portales compatibles">
+            <strong>Compatible con los campos más comunes de:</strong>
+            LinkedIn, Computrabajo, elempleo, Indeed, Greenhouse, Lever y Workday.
+            Los campos que dejes vacíos simplemente no se completan.
+        </aside>
 
-            <div class="form-grid">
-                <div class="field">
-                    <label for="firstName">Nombre</label>
-                    <input type="text" id="firstName" name="firstName" placeholder="Jane">
-                </div>
+        <form id="profileForm" class="profile-form" novalidate>
 
-                <div class="field">
-                    <label for="lastName">Apellido</label>
-                    <input type="text" id="lastName" name="lastName" placeholder="Doe">
-                </div>
+            <fieldset class="form-section">
+                <legend class="form-section__title">Datos personales</legend>
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="firstName">Nombre(s)</label>
+                        <input type="text" id="firstName" name="firstName" maxlength="100" autocomplete="given-name" placeholder="Jane">
+                    </div>
 
-                <div class="field">
-                    <label for="phone">Teléfono</label>
-                    <input type="tel" id="phone" name="phone" placeholder="+57 300 000 0000">
-                </div>
+                    <div class="field">
+                        <label for="lastName">Apellido(s)</label>
+                        <input type="text" id="lastName" name="lastName" maxlength="100" autocomplete="family-name" placeholder="Doe">
+                    </div>
 
-                <div class="field">
-                    <label for="country">País</label>
-                    <input type="text" id="country" name="country" placeholder="Colombia">
-                </div>
+                    <div class="field">
+                        <label for="email">Correo de contacto</label>
+                        <input type="email" id="email" name="email" maxlength="150" autocomplete="email" placeholder="jane@correo.com">
+                    </div>
 
-                <div class="field">
-                    <label for="city">Ciudad</label>
-                    <input type="text" id="city" name="city" placeholder="Medellín">
-                </div>
+                    <div class="field">
+                        <label for="phone">Teléfono / celular</label>
+                        <input type="tel" id="phone" name="phone" maxlength="20" autocomplete="tel" placeholder="+57 300 000 0000">
+                        <span class="field__hint">Incluye el indicativo (+57) para portales internacionales.</span>
+                    </div>
 
-                <div class="field">
-                    <label for="linkedin">LinkedIn</label>
-                    <input type="text" id="linkedin" name="linkedin" placeholder="linkedin.com/in/tu-usuario">
-                </div>
+                    <div class="field">
+                        <label for="documentType">Tipo de documento</label>
+                        <select id="documentType" name="documentType">
+                            <option value="">Selecciona…</option>
+                            <option value="CC">Cédula de ciudadanía</option>
+                            <option value="CE">Cédula de extranjería</option>
+                            <option value="TI">Tarjeta de identidad</option>
+                            <option value="PA">Pasaporte</option>
+                            <option value="PPT">Permiso por Protección Temporal (PPT)</option>
+                            <option value="DNI">DNI</option>
+                            <option value="RUT">RUT</option>
+                            <option value="CURP">CURP</option>
+                            <option value="OTRO">Otro</option>
+                        </select>
+                    </div>
 
-                <div class="field">
-                    <label for="github">GitHub</label>
-                    <input type="text" id="github" name="github" placeholder="github.com/tu-usuario">
-                </div>
+                    <div class="field">
+                        <label for="documentNumber">Número de documento</label>
+                        <input type="text" id="documentNumber" name="documentNumber" maxlength="30" placeholder="1020304050">
+                    </div>
 
-                <div class="field field--full">
-                    <label for="skills">Habilidades</label>
-                    <input type="text" id="skills" name="skills" placeholder="JavaScript, SQL, React (sepáralas con comas)">
-                    <span class="field__hint">Sepáralas con comas — se guardan como una lista.</span>
+                    <div class="field">
+                        <label for="birthDate">Fecha de nacimiento</label>
+                        <input type="date" id="birthDate" name="birthDate" autocomplete="bday">
+                    </div>
                 </div>
-            </div>
+            </fieldset>
+
+            <fieldset class="form-section">
+                <legend class="form-section__title">Ubicación</legend>
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="country">País</label>
+                        <input type="text" id="country" name="country" maxlength="100" autocomplete="country-name" placeholder="Colombia">
+                    </div>
+
+                    <div class="field">
+                        <label for="state">Departamento / estado</label>
+                        <input type="text" id="state" name="state" maxlength="100" autocomplete="address-level1" placeholder="Antioquia">
+                    </div>
+
+                    <div class="field">
+                        <label for="city">Ciudad</label>
+                        <input type="text" id="city" name="city" maxlength="100" autocomplete="address-level2" placeholder="Medellín">
+                    </div>
+
+                    <div class="field">
+                        <label for="postalCode">Código postal</label>
+                        <input type="text" id="postalCode" name="postalCode" maxlength="20" autocomplete="postal-code" placeholder="050001">
+                    </div>
+
+                    <div class="field field--full">
+                        <label for="address">Dirección</label>
+                        <input type="text" id="address" name="address" maxlength="255" autocomplete="street-address" placeholder="Calle 10 # 20-30">
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="form-section">
+                <legend class="form-section__title">Perfil profesional y experiencia</legend>
+                <div class="form-grid">
+                    <div class="field field--full">
+                        <label for="headline">Titular profesional</label>
+                        <input type="text" id="headline" name="headline" maxlength="150" placeholder="Desarrolladora Full Stack | Node.js · React">
+                    </div>
+
+                    <div class="field field--full">
+                        <label for="summary">Resumen / acerca de mí</label>
+                        <textarea id="summary" name="summary" rows="4" maxlength="2000" placeholder="Cuéntale a los reclutadores quién eres y qué te interesa."></textarea>
+                    </div>
+
+                    <div class="field">
+                        <label for="currentTitle">Cargo actual o más reciente</label>
+                        <input type="text" id="currentTitle" name="currentTitle" maxlength="150" autocomplete="organization-title" placeholder="Desarrolladora Backend">
+                    </div>
+
+                    <div class="field">
+                        <label for="currentCompany">Empresa actual o más reciente</label>
+                        <input type="text" id="currentCompany" name="currentCompany" maxlength="150" autocomplete="organization" placeholder="Acme S.A.S.">
+                    </div>
+
+                    <div class="field">
+                        <label for="yearsExperience">Años de experiencia</label>
+                        <input type="number" id="yearsExperience" name="yearsExperience" min="0" max="70" step="1" placeholder="3">
+                    </div>
+
+                    <div class="field">
+                        <label for="salaryExpectation">Aspiración salarial mensual</label>
+                        <input type="number" id="salaryExpectation" name="salaryExpectation" min="0" step="1" placeholder="4500000">
+                        <span class="field__hint">Solo números, en tu moneda local.</span>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="form-section">
+                <legend class="form-section__title">Educación</legend>
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="educationLevel">Nivel de estudios</label>
+                        <select id="educationLevel" name="educationLevel">
+                            <option value="">Selecciona…</option>
+                            <option value="bachillerato">Bachillerato / secundaria</option>
+                            <option value="tecnico">Técnico</option>
+                            <option value="tecnologo">Tecnólogo</option>
+                            <option value="universitario">Universitario / pregrado</option>
+                            <option value="especializacion">Especialización / posgrado</option>
+                            <option value="maestria">Maestría</option>
+                            <option value="doctorado">Doctorado</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="graduationYear">Año de graduación</label>
+                        <input type="number" id="graduationYear" name="graduationYear" min="1950" max="2100" step="1" placeholder="2024">
+                    </div>
+
+                    <div class="field">
+                        <label for="institution">Institución educativa</label>
+                        <input type="text" id="institution" name="institution" maxlength="150" placeholder="Universidad Nacional de Colombia">
+                    </div>
+
+                    <div class="field">
+                        <label for="fieldOfStudy">Título / área de estudio</label>
+                        <input type="text" id="fieldOfStudy" name="fieldOfStudy" maxlength="150" placeholder="Ingeniería de Sistemas">
+                    </div>
+
+                    <div class="field field--full">
+                        <label for="languages">Idiomas</label>
+                        <input type="text" id="languages" name="languages" maxlength="255" placeholder="Español (nativo), Inglés (B2)">
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="form-section">
+                <legend class="form-section__title">Enlaces y habilidades</legend>
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="linkedin">LinkedIn</label>
+                        <input type="text" id="linkedin" name="linkedin" maxlength="255" placeholder="linkedin.com/in/tu-usuario">
+                    </div>
+
+                    <div class="field">
+                        <label for="github">GitHub</label>
+                        <input type="text" id="github" name="github" maxlength="255" placeholder="github.com/tu-usuario">
+                    </div>
+
+                    <div class="field field--full">
+                        <label for="portfolio">Portafolio / sitio web</label>
+                        <input type="text" id="portfolio" name="portfolio" maxlength="255" autocomplete="url" placeholder="https://tu-portafolio.dev">
+                    </div>
+
+                    <div class="field field--full">
+                        <label for="skills">Habilidades</label>
+                        <input type="text" id="skills" name="skills" placeholder="JavaScript, SQL, React (sepáralas con comas)">
+                        <span class="field__hint">Sepáralas con comas — se guardan como una lista.</span>
+                    </div>
+                </div>
+            </fieldset>
 
             <button type="submit" class="btn btn--primary" id="saveProfileButton">
                 Guardar perfil

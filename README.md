@@ -43,18 +43,25 @@ Ing.-Software_Project_ChromeExtension/
 │   │   │   └── database.js   # Pool de conexión a MySQL
 │   │   ├── middleware/
 │   │   │   └── auth.middleware.js   # Verificación de token JWT
+│   │   ├── models/
+│   │   │   └── profile.fields.js    # Campos del perfil y su validación
 │   │   └── routes/
 │   │       ├── auth.routes.js       # /auth/register y /auth/login
 │   │       └── profile.routes.js    # /profile (obtener y guardar)
 │   ├── database/
-│   │   └── schema.sql       # Definición de las tablas MySQL
+│   │   ├── schema.sql       # Definición de las tablas MySQL
+│   │   └── migrations/      # Cambios incrementales para bases ya creadas
 │   └── package.json
 │
 ├── extension/               # Extensión de navegador (Manifest V3)
 │   ├── manifest.json
-│   ├── content.js           # Content script: detecta y rellena campos del formulario
+│   ├── content.js           # Content script: punto de entrada (mensaje del popup)
+│   ├── src/                 # Motor de autocompletado modular (core/, dom/, sites/)
 │   ├── popup/               # UI del popup (login + botón de autocompletar)
-│   └── test-form.html       # Formulario de prueba para validar el autocompletado
+│   ├── test-form.html       # Formulario de prueba para validar el autocompletado
+│   └── test-forms/          # Réplicas de LinkedIn Easy Apply y hoja de vida tipo Computrabajo
+│
+├── tests/extension/         # Pruebas automatizadas de la extensión (node:test + jsdom)
 │
 ├── docs/                    # Documentación del proyecto
 │   ├── api/                 # Contrato de la API y modelos de datos
@@ -82,6 +89,7 @@ Ing.-Software_Project_ChromeExtension/
 | Obtener perfil (`GET /profile`) | ✅ Implementado |
 | Guardar / actualizar perfil (`POST /profile`) | ✅ Implementado |
 | Autocompletado de formularios (extensión) | ✅ Implementado |
+| Compatibilidad con LinkedIn, Computrabajo, elempleo, Indeed y ATS| ✅ Implementado |
 | Historial de autocompletados (`/logs`) | 🚧 Planeado (tablas en el esquema, sin endpoints aún) |
 | Recuperación de contraseña | 🚧 Planeado (existe la página, sin backend) |
 
@@ -104,6 +112,12 @@ mysql -u root -p < backend/database/schema.sql
 ```
 
 > También puedes abrir `backend/database/schema.sql` en MySQL Workbench y ejecutar todo el script de una vez.
+
+Si tu base ya existía antes de la HU-RNF-011, ejecuta **una sola vez** la migración que agrega los nuevos campos del perfil:
+
+```bash
+mysql -u root -p fillpro_db < backend/database/migrations/profile_fields.sql
+```
 
 ### 2. Backend
 
@@ -133,7 +147,14 @@ El frontend es HTML/JS estático. Ábrelo con cualquier servidor estático (por 
 1. Abre `chrome://extensions` en tu navegador.
 2. Activa el **Modo desarrollador**.
 3. Haz clic en **Cargar descomprimida** y selecciona la carpeta `extension/`.
-4. Ancla la extensión y ábrela para iniciar sesión y probar el autocompletado (puedes usar `extension/test-form.html` como formulario de prueba).
+4. Ancla la extensión y ábrela para iniciar sesión y probar el autocompletado (puedes usar `extension/test-form.html` o las réplicas de `extension/test-forms/` servidas por HTTP, p. ej. con Live Server).
+
+### 5. Pruebas automatizadas
+
+```bash
+npm install   # en la raíz: instala jsdom (solo desarrollo)
+npm test      # pruebas de la extensión y del backend (node:test)
+```
 
 ---
 
