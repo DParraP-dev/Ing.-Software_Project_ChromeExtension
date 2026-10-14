@@ -92,7 +92,7 @@ autofillButton.addEventListener("click", async () => {
             throw new Error("Inicia sesión para usar el autocompletado.");
         }
 
-        const { profile } = await requestProfile(token);
+        const { profile, skills, accountEmail } = await requestProfile(token);
         if (!profile) {
             throw new Error("Completa y guarda tu perfil antes de autocompletar.");
         }
@@ -108,20 +108,30 @@ autofillButton.addEventListener("click", async () => {
 
         const result = await chrome.tabs.sendMessage(activeTab.id, {
             type: "FILLPRO_AUTOFILL",
-            profile
+            profile,
+            skills,
+            accountEmail
         });
 
         if (!result?.ok) {
-            throw new Error("La página no respondió al autocompletado.");
+            throw new Error(result?.error || "La página no respondió al autocompletado.");
         }
 
+        const siteLabel = result.site ? ` en ${result.site}` : "";
+        const skippedLabel = result.skipped > 0
+            ? ` ${result.skipped} ya tenían información y no se modificaron.`
+            : "";
+
         if (result.filled === 0) {
-            setStatus("No se encontraron campos compatibles en esta página.", "error");
+            setStatus(
+                `No se encontraron campos compatibles vacíos${siteLabel}.${skippedLabel}`,
+                "error"
+            );
             return;
         }
 
         setStatus(
-            `Se completaron ${result.filled} campos correctamente.`,
+            `Se completaron ${result.filled} campos${siteLabel}.${skippedLabel}`,
             "success"
         );
     } catch (error) {
