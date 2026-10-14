@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de prueba | FillPro</title>
+    <style>
+        :root {
+            color-scheme: light;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: #172033;
+            background: #f3f5f9;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 16px;
+        }
+
+        main {
+            width: min(760px, 100%);
+            margin: 0 auto;
+            padding: 32px;
+            background: #ffffff;
+            border: 1px solid #dfe4ee;
+            border-radius: 18px;
+            box-shadow: 0 16px 40px rgba(30, 44, 75, 0.08);
+        }
+
+        h1 {
+            margin: 0 0 8px;
+        }
+
+        .description {
+            margin: 0 0 28px;
+            color: #59647a;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .field--full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 650;
+        }
+
+        input {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #bac3d3;
+            border-radius: 9px;
+            font: inherit;
+        }
+
+        input:focus {
+            border-color: #5b59e8;
+            outline: 3px solid rgba(91, 89, 232, 0.15);
+        }
+
+        button {
+            margin-top: 28px;
+            padding: 12px 20px;
+            border: 0;
+            border-radius: 9px;
+            color: #ffffff;
+            background: #5b59e8;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        #result {
+            min-height: 24px;
+            margin: 18px 0 0;
+            color: #147447;
+            font-weight: 650;
+        }
+
+        @media (max-width: 600px) {
+            main {
+                padding: 24px 18px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .field--full {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Postulación de prueba</h1>
+        <p class="description">
+            Usa este formulario para comprobar el autocompletado de FillPro.
+            Sus campos tienen nombres variados, como ocurre en sitios reales.
+        </p>
+
+        <form id="jobApplicationForm">
+            <div class="form-grid">
+                <div class="field">
+                    <label for="candidate-given-name">Nombre</label>
+                    <input
+                        id="candidate-given-name"
+                        name="first_name"
+                        type="text"
+                        autocomplete="given-name"
+                        placeholder="Escribe tu nombre"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="familyName">Apellido</label>
+                    <input
+                        id="familyName"
+                        name="lastName"
+                        type="text"
+                        autocomplete="family-name"
+                        placeholder="Escribe tu apellido"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="contact-number">Teléfono de contacto</label>
+                    <input
+                        id="contact-number"
+                        name="telephone"
+                        type="tel"
+                        autocomplete="tel"
+                        placeholder="+57 300 000 0000"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="applicant-country">País de residencia</label>
+                    <input
+                        id="applicant-country"
+                        name="country"
+                        type="text"
+                        autocomplete="country-name"
+                        placeholder="Colombia"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="location-city">Ciudad actual</label>
+                    <input
+                        id="location-city"
+                        name="city"
+                        type="text"
+                        autocomplete="address-level2"
+                        placeholder="Bogotá"
+                    >
+                </div>
+
+                <div class="field">
+                    <label for="professional-network">Perfil de LinkedIn</label>
+                    <input
+                        id="professional-network"
+                        name="linkedin_url"
+                        type="url"
+                        placeholder="https://linkedin.com/in/usuario"
+                    >
+                </div>
+
+                <div class="field field--full">
+                    <label for="code-portfolio">GitHub o portafolio de código</label>
+                    <input
+                        id="code-portfolio"
+                        name="githubProfile"
+                        type="url"
+                        placeholder="https://github.com/usuario"
+                    >
+                </div>
+            </div>
+
+            <button type="submit">Enviar postulación de prueba</button>
+            <p id="result" role="status" aria-live="polite"></p>
+        </form>
+    </main>
+
+    <script>
+        document.getElementById("jobApplicationForm").addEventListener("submit", (event) => {
+            event.preventDefault();
+            document.getElementById("result").textContent =
+                "Formulario recibido. La prueba no envió información a ningún servidor.";
+        });
+    </script>
+</body>
+</html>
