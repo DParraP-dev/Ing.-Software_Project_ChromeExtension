@@ -1,0 +1,16 @@
+{
+  "name": "fillpro",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Monorepo FillPro: pruebas automatizadas de la extensión (las dependencias del backend viven en backend/package.json).",
+  "scripts": {
+    "test": "node --test",
+    "test:backend": "npm --prefix backend test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}
