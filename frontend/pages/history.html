@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial — FillPro</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/Icono-FillPro.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/historystyles.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <a href="main.html" class="topbar__back">← Volver</a>
+        <img src="../assets/FillPro_Logo_Alt-sinFondo.png" alt="FillPro" class="topbar__logo">
+    </header>
+
+    <main class="page">
+        <h1 class="page__title">Historial de uso</h1>
+        <p class="page__subtitle">
+            Aquí puedes ver en qué sitios usaste FillPro para autocompletar
+            formularios y en qué fecha lo hiciste.
+        </p>
+
+        <div class="history-toolbar">
+            <p class="history-toolbar__count" id="historyCount"></p>
+            <button type="button" class="btn btn--danger" id="clearHistoryButton" disabled>
+                Borrar historial
+            </button>
+        </div>
+
+        <p class="history-status" id="historyStatus" role="status" aria-live="polite">
+            Cargando historial...
+        </p>
+
+        <ol class="history-list" id="historyList"></ol>
+    </main>
+
+    <script src="../js/history.js"></script>
+</body>
+</html>
