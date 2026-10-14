@@ -74,7 +74,7 @@ test("el SELECT formatea las fechas y no usa SELECT *", () => {
 test("schema.sql y la migración contienen todas las columnas del perfil", () => {
     const schema = fs.readFileSync(path.join(__dirname, "../database/schema.sql"), "utf8");
     const migration = fs.readFileSync(
-        path.join(__dirname, "../database/migrations/001_hu_rnf_011_profile_fields.sql"),
+        path.join(__dirname, "../database/migrations/profile_fields.sql"),
         "utf8"
     );
     const original = new Set(["first_name", "last_name", "phone", "country", "city", "linkedin", "github"]);

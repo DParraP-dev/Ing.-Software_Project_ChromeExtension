@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS users (
 -- Los campos siguen los formularios más comunes de portales de
 -- empleo (LinkedIn, Computrabajo, elempleo, ATS) — HU-RNF-011.
 -- Si ya tienes la base creada, ejecuta en su lugar:
---   database/migrations/001_hu_rnf_011_profile_fields.sql
+--   database/migrations/profile_fields.sql
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS profiles (
     id INT AUTO_INCREMENT PRIMARY KEY,
