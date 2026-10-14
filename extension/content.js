@@ -1,25 +1,26 @@
 /**
  * Content script de FillPro (punto de entrada).
  *
- * Solo escucha el mensaje del popup y delega en FillPro.autofillService.
+ * Escucha solicitudes de vista previa y confirmación del popup.
  * Los módulos de src/ se cargan antes que este archivo (ver manifest.json)
  * y viven en el "isolated world" de la extensión: no comparten variables
  * con los scripts de la página ni registran listeners sobre su DOM.
  */
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-    if (message?.type !== "FILLPRO_AUTOFILL") {
+    if (!["FILLPRO_PREVIEW", "FILLPRO_APPLY_PREVIEW", "FILLPRO_AUTOFILL"].includes(message?.type)) {
         return false;
     }
 
     try {
-        const result = globalThis.FillPro.autofillService.run({
-            profile: message.profile,
-            skills: message.skills,
-            accountEmail: message.accountEmail
-        }, {
-            overwrite: Boolean(message.overwrite)
-        });
-        sendResponse({ ok: true, ...result });
+        if (message.type === "FILLPRO_PREVIEW") {
+            sendResponse(globalThis.FillPro.previewService.create({
+                profile: message.profile, skills: message.skills, accountEmail: message.accountEmail
+            }));
+        } else if (message.type === "FILLPRO_APPLY_PREVIEW") {
+            sendResponse(globalThis.FillPro.previewService.apply(message));
+        } else {
+            sendResponse({ ok: false, error: "Recarga FillPro y revisa la vista previa antes de autocompletar." });
+        }
     } catch (error) {
         console.error("[FillPro] Error al autocompletar", error);
         sendResponse({ ok: false, error: error?.message || "Error inesperado" });

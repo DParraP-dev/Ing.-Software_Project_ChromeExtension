@@ -230,17 +230,28 @@ test.describe("compatibilidad con el DOM de la página", () => {
 });
 
 test.describe("content script (mensajería con el popup)", () => {
-    test("responde al mensaje FILLPRO_AUTOFILL con el resultado", () => {
+    test("exige previsualizar y confirmar antes de autocompletar desde el popup", () => {
         const { document, sendMessage } = loadExtension("<label for='n'>Nombre</label><input id='n'>", {
             url: "https://co.computrabajo.com/",
             includeContentScript: true
         });
         const { profile, skills, accountEmail } = sampleApiResponse();
-        const response = sendMessage({ type: "FILLPRO_AUTOFILL", profile, skills, accountEmail });
+        const direct = sendMessage({ type: "FILLPRO_AUTOFILL", profile, skills, accountEmail });
+        assert.equal(direct.ok, false);
+        assert.equal(document.getElementById("n").value, "");
+
+        const preview = sendMessage({ type: "FILLPRO_PREVIEW", profile, skills, accountEmail });
+        assert.equal(preview.ok, true);
+        assert.equal(preview.site, "Computrabajo");
+        assert.equal(document.getElementById("n").value, "");
+        const response = sendMessage({
+            type: "FILLPRO_APPLY_PREVIEW",
+            previewId: preview.previewId,
+            fields: preview.fields.map(({ id, value }) => ({ id, value }))
+        });
 
         assert.equal(response.ok, true);
         assert.equal(response.filled, 1);
-        assert.equal(response.site, "Computrabajo");
         assert.deepEqual(plain(response.fields), ["firstName"]);
         assert.equal(document.getElementById("n").value, "Juan Carlos");
     });

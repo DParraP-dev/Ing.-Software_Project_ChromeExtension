@@ -56,7 +56,7 @@
      * @param {{ document?: Document, hostname?: string, overwrite?: boolean }} [options]
      * @returns {{ filled: number, fields: string[], skipped: number, site: string|null }}
      */
-    function run(payload, options = {}) {
+    function scan(payload, options = {}) {
         const doc = options.document || global.document;
         const hostname = options.hostname ?? doc.location?.hostname ?? "";
         const site = FillPro.siteRegistry.resolve(hostname);
@@ -80,15 +80,22 @@
 
         applyFormContextRules(matches);
 
+        for (const match of matches) {
+            match.key = site?.keyAliases?.[match.key] && hasValue(profile[site.keyAliases[match.key]])
+                ? site.keyAliases[match.key]
+                : match.key;
+        }
+        return { profile, site, matches };
+    }
+
+    function run(payload, options = {}) {
+        const { profile, site, matches } = scan(payload, options);
+
         const filledKeys = [];
         let filled = 0;
         let skipped = 0;
 
         for (const match of matches) {
-            match.key = site?.keyAliases?.[match.key] && hasValue(profile[site.keyAliases[match.key]])
-                ? site.keyAliases[match.key]
-                : match.key;
-
             if (!hasValue(profile[match.key])) {
                 continue;
             }
@@ -110,5 +117,5 @@
         };
     }
 
-    FillPro.autofillService = { run, applyFormContextRules };
+    FillPro.autofillService = { run, scan, applyFormContextRules };
 })(globalThis);

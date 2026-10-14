@@ -55,14 +55,19 @@
         element.dispatchEvent(event);
     }
 
-    function withUserLikeEvents(element, write, data) {
+    function withUserLikeEvents(element, write, data, beforeWrite) {
         dispatch(element, "focus");
         dispatch(element, "focusin");
+        // A portal may change its form in focus handlers; reviewed writes revalidate here.
+        if (beforeWrite && !beforeWrite()) {
+            return false;
+        }
         write();
         dispatch(element, "input", data !== undefined ? { data } : {});
         dispatch(element, "change");
         dispatch(element, "blur");
         dispatch(element, "focusout");
+        return true;
     }
 
     /** ¿El control ya tiene un valor elegido por el usuario o el portal? */
@@ -85,7 +90,7 @@
     /**
      * @returns {"filled"|"skipped"|"unchanged"}
      */
-    function fillText(element, value, { overwrite = false } = {}) {
+    function fillText(element, value, { overwrite = false, beforeWrite } = {}) {
         if (String(element.value) === value) {
             return "unchanged";
         }
@@ -93,7 +98,9 @@
             return "skipped";
         }
 
-        withUserLikeEvents(element, () => setNativeValue(element, value), value);
+        if (!withUserLikeEvents(element, () => setNativeValue(element, value), value, beforeWrite)) {
+            return "skipped";
+        }
 
         // Algunos inputs (máscaras, type=number) rechazan el valor: no se reporta como completado.
         return String(element.value) === value ? "filled" : "skipped";
@@ -102,7 +109,7 @@
     /**
      * @returns {"filled"|"skipped"|"unchanged"}
      */
-    function fillSelect(element, optionIndex, { overwrite = false } = {}) {
+    function fillSelect(element, optionIndex, { overwrite = false, beforeWrite } = {}) {
         if (optionIndex < 0 || optionIndex >= element.options.length) {
             return "skipped";
         }
@@ -114,12 +121,15 @@
         }
 
         const option = element.options[optionIndex];
-        withUserLikeEvents(element, () => {
+        const written = withUserLikeEvents(element, () => {
             setNativeValue(element, option.value);
             if (element.selectedIndex !== optionIndex) {
                 element.selectedIndex = optionIndex; // valores duplicados entre opciones
             }
-        });
+        }, undefined, beforeWrite);
+        if (!written) {
+            return "skipped";
+        }
         return element.selectedIndex === optionIndex ? "filled" : "skipped";
     }
 

@@ -89,6 +89,7 @@ Ing.-Software_Project_ChromeExtension/
 | Obtener perfil (`GET /profile`) | ✅ Implementado |
 | Guardar / actualizar perfil (`POST /profile`) | ✅ Implementado |
 | Autocompletado de formularios (extensión) | ✅ Implementado |
+| Previsualización, corrección y confirmación antes de autocompletar | ✅ Implementado |
 | Compatibilidad con LinkedIn, Computrabajo, elempleo, Indeed y ATS| ✅ Implementado |
 | Historial de autocompletados (`/logs`) | 🚧 Planeado (tablas en el esquema, sin endpoints aún) |
 | Recuperación de contraseña | 🚧 Planeado (existe la página, sin backend) |
@@ -154,7 +155,11 @@ El frontend es HTML/JS estático. Ábrelo con cualquier servidor estático (por 
 ```bash
 npm install   # en la raíz: instala jsdom (solo desarrollo)
 npm test      # pruebas de la extensión y del backend (node:test)
+npm run test:browser  # popup y content scripts en Chrome, con API simulada
 ```
+
+El autocompletado requiere revisar y confirmar los valores desde el popup.
+Consulta la [guía de previsualización y pruebas](docs/extension/previsualizacion.md).
 
 ---
 
