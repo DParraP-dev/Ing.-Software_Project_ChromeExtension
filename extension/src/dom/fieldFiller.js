@@ -1,0 +1,137 @@
+/**
+ * Escribe valores en los controles de forma compatible con los frameworks
+ * que usan los portales (React en LinkedIn, Angular/Vue en otros ATS):
+ *
+ *  1. Usa el setter nativo de `value` del prototipo (HTMLInputElement, etc.)
+ *     de la ventana dueña del elemento (sirve también dentro de iframes).
+ *     Así React detecta el cambio en su "value tracker".
+ *  2. Dispara la misma secuencia que un usuario: focus → input → change → blur,
+ *     con burbujeo, para que validaciones y estados "touched" se actualicen.
+ *  3. No llama a element.focus(): no roba el foco ni desplaza la página.
+ *  4. No sobrescribe lo que el usuario (o el portal) ya escribió, salvo que
+ *     se pida explícitamente con `overwrite`.
+ */
+(function (global) {
+    "use strict";
+
+    const FillPro = (global.FillPro = global.FillPro || {});
+
+    function windowOf(element) {
+        return element.ownerDocument?.defaultView || global;
+    }
+
+    function prototypeFor(element) {
+        const view = windowOf(element);
+        switch (element.tagName) {
+            case "TEXTAREA":
+                return view.HTMLTextAreaElement?.prototype;
+            case "SELECT":
+                return view.HTMLSelectElement?.prototype;
+            default:
+                return view.HTMLInputElement?.prototype;
+        }
+    }
+
+    function setNativeValue(element, value) {
+        const prototype = prototypeFor(element);
+        const setter = prototype && Object.getOwnPropertyDescriptor(prototype, "value")?.set;
+        if (setter) {
+            setter.call(element, value);
+        } else {
+            element.value = value;
+        }
+    }
+
+    function dispatch(element, type, init = {}) {
+        const view = windowOf(element);
+        let event;
+        if ((type === "focus" || type === "blur" || type === "focusin" || type === "focusout") && view.FocusEvent) {
+            event = new view.FocusEvent(type, { bubbles: type === "focusin" || type === "focusout", ...init });
+        } else if (type === "input" && view.InputEvent) {
+            event = new view.InputEvent(type, { bubbles: true, cancelable: false, inputType: "insertText", ...init });
+        } else {
+            event = new (view.Event || Event)(type, { bubbles: true, ...init });
+        }
+        element.dispatchEvent(event);
+    }
+
+    function withUserLikeEvents(element, write, data) {
+        dispatch(element, "focus");
+        dispatch(element, "focusin");
+        write();
+        dispatch(element, "input", data !== undefined ? { data } : {});
+        dispatch(element, "change");
+        dispatch(element, "blur");
+        dispatch(element, "focusout");
+    }
+
+    /** ¿El control ya tiene un valor elegido por el usuario o el portal? */
+    function hasUserValue(element) {
+        if (element.tagName === "SELECT") {
+            const option = element.options[element.selectedIndex];
+            if (!option) {
+                return false;
+            }
+            return !FillPro.valueFormatter.isPlaceholderOption({
+                value: option.value,
+                text: option.textContent,
+                disabled: option.disabled,
+                index: element.selectedIndex
+            });
+        }
+        return String(element.value ?? "").trim() !== "";
+    }
+
+    /**
+     * @returns {"filled"|"skipped"|"unchanged"}
+     */
+    function fillText(element, value, { overwrite = false } = {}) {
+        if (String(element.value) === value) {
+            return "unchanged";
+        }
+        if (!overwrite && hasUserValue(element)) {
+            return "skipped";
+        }
+
+        withUserLikeEvents(element, () => setNativeValue(element, value), value);
+
+        // Algunos inputs (máscaras, type=number) rechazan el valor: no se reporta como completado.
+        return String(element.value) === value ? "filled" : "skipped";
+    }
+
+    /**
+     * @returns {"filled"|"skipped"|"unchanged"}
+     */
+    function fillSelect(element, optionIndex, { overwrite = false } = {}) {
+        if (optionIndex < 0 || optionIndex >= element.options.length) {
+            return "skipped";
+        }
+        if (element.selectedIndex === optionIndex) {
+            return "unchanged";
+        }
+        if (!overwrite && hasUserValue(element)) {
+            return "skipped";
+        }
+
+        const option = element.options[optionIndex];
+        withUserLikeEvents(element, () => {
+            setNativeValue(element, option.value);
+            if (element.selectedIndex !== optionIndex) {
+                element.selectedIndex = optionIndex; // valores duplicados entre opciones
+            }
+        });
+        return element.selectedIndex === optionIndex ? "filled" : "skipped";
+    }
+
+    /** Opciones del select en formato plano para FillPro.valueFormatter. */
+    function readOptions(select) {
+        return Array.from(select.options, (option, index) => ({
+            value: option.value,
+            text: option.textContent || option.label || "",
+            disabled: option.disabled,
+            index
+        }));
+    }
+
+    FillPro.fieldFiller = { fillText, fillSelect, readOptions, hasUserValue, setNativeValue };
+})(globalThis);

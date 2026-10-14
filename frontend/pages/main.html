@@ -27,10 +27,11 @@
             <div class="hero__ring" aria-hidden="true">
                 <svg viewBox="0 0 200 200" class="ring">
                     <circle class="ring__track" cx="100" cy="100" r="86"></circle>
-                    <circle class="ring__progress" cx="100" cy="100" r="86" style="--progress: 0.68;"></circle>
+                    <!-- Quitamos el valor estático y dejamos la variable CSS lista para actualizarse -->
+                    <circle id="ringProgress" class="ring__progress" cx="100" cy="100" r="86" style="--progress: 0;"></circle>
                 </svg>
                 <div class="ring__label">
-                    <span class="ring__number">68%</span>
+                    <span id="ringNumber" class="ring__number">0%</span>
                     <span class="ring__caption">perfil completo</span>
                 </div>
             </div>
@@ -64,7 +65,8 @@
                     </svg>
                 </span>
                 <div class="stat-card__body">
-                    <p class="stat-card__value">68%</p>
+                    <!-- ID añadido para actualizar dinámicamente este valor -->
+                    <p id="statProfileValue" class="stat-card__value">0%</p>
                     <p class="stat-card__label">Perfil completo</p>
                 </div>
             </article>
@@ -110,6 +112,40 @@
 
     </main>
 
+    <!-- Script para actualizar dinámicamente el progreso en main -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Leemos el porcentaje guardado (por defecto 0 si no hay nada)
+            const porcentajeGuardado = parseInt(localStorage.getItem('profileProgress')) || 0;
+            const decimalProgress = porcentajeGuardado / 100;
+
+            // Actualizar el anillo SVG mediante la variable CSS --progress
+            const ringProgress = document.getElementById('ringProgress');
+            if (ringProgress) {
+                ringProgress.style.setProperty('--progress', decimalProgress);
+            }
+
+            // Actualizar el texto del anillo
+            const ringNumber = document.getElementById('ringNumber');
+            if (ringNumber) {
+                ringNumber.textContent = porcentajeGuardado + '%';
+            }
+
+            // Actualizar la tarjeta estadística del perfil
+            const statProfileValue = document.getElementById('statProfileValue');
+            if (statProfileValue) {
+                statProfileValue.textContent = porcentajeGuardado + '%';
+            }
+
+            // Opcional: Hacer funcional el botón de completar perfil para que redirija
+            const completeProfileButton = document.getElementById('completeProfileButton');
+            if (completeProfileButton) {
+                completeProfileButton.addEventListener('click', () => {
+                    window.location.href = 'profile.html';
+                });
+            }
+        });
+    </script>
     <script src="../js/main.js"></script>
 </body>
 </html>

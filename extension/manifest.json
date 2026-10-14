@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "FillPro",
-    "description": "Autocompleta formularios de postulación con los datos guardados en FillPro.",
-    "version": "0.1.0",
+    "description": "Autocompleta formularios de postulación (LinkedIn, Computrabajo, elempleo, Indeed, ATS) con los datos guardados en FillPro.",
+    "version": "0.2.0",
     "permissions": [
         "storage",
         "activeTab"
@@ -21,6 +21,23 @@
                 "https://*/*"
             ],
             "js": [
+                "src/core/text.js",
+                "src/core/countries.js",
+                "src/core/valueSynonyms.js",
+                "src/core/fieldCatalog.js",
+                "src/core/profileAdapter.js",
+                "src/core/fieldMatcher.js",
+                "src/core/valueFormatter.js",
+                "src/dom/fieldDescriptor.js",
+                "src/dom/fieldScanner.js",
+                "src/dom/fieldFiller.js",
+                "src/sites/siteRegistry.js",
+                "src/sites/linkedin.js",
+                "src/sites/computrabajo.js",
+                "src/sites/elempleo.js",
+                "src/sites/indeed.js",
+                "src/sites/ats.js",
+                "src/autofillService.js",
                 "content.js"
             ],
             "run_at": "document_idle"

@@ -147,7 +147,7 @@ GET /profile
 
 ## Descripción
 
-Obtiene la información del perfil del usuario autenticado. Si el usuario todavía no tiene un perfil creado, `profile` es `null` y `skills` es un arreglo vacío (respuesta con estado 200).
+Obtiene la información del perfil del usuario autenticado. Si el usuario todavía no tiene un perfil creado, `profile` es `null` y `skills` es un arreglo vacío (respuesta con estado 200). `accountEmail` es el correo de la cuenta, usado como respaldo cuando el perfil no tiene correo de contacto.
 
 ## Headers
 
@@ -164,14 +164,34 @@ Authorization: Bearer JWT_TOKEN
         "user_id": 1,
         "first_name": "Juan",
         "last_name": "Pérez",
-        "phone": "3001234567",
+        "email": "juan@email.com",
+        "phone": "+57 3001234567",
+        "document_type": "CC",
+        "document_number": "1020304050",
+        "birth_date": "1995-05-10",
         "country": "Colombia",
+        "state": "Antioquia",
         "city": "Medellín",
+        "address": "Calle 10 # 20-30",
+        "postal_code": "050001",
+        "headline": "Desarrollador Full Stack",
+        "summary": "Desarrollador con 4 años de experiencia...",
+        "current_title": "Desarrollador Backend",
+        "current_company": "Acme S.A.S.",
+        "years_experience": 4,
+        "salary_expectation": 4500000,
+        "education_level": "universitario",
+        "institution": "Universidad Nacional de Colombia",
+        "field_of_study": "Ingeniería de Sistemas",
+        "graduation_year": 2019,
+        "languages": "Español (nativo), Inglés (B2)",
         "linkedin": "https://linkedin.com/in/juan",
         "github": "juanperez",
+        "portfolio": "https://juan.dev",
         "updated_at": "2026-09-25T15:20:00.000Z"
     },
-    "skills": ["Java", "Node.js"]
+    "skills": ["Java", "Node.js"],
+    "accountEmail": "usuario@email.com"
 }
 ```
 
@@ -180,7 +200,8 @@ Authorization: Bearer JWT_TOKEN
 ```json
 {
     "profile": null,
-    "skills": []
+    "skills": [],
+    "accountEmail": "usuario@email.com"
 }
 ```
 
@@ -203,7 +224,7 @@ POST /profile
 
 ## Descripción
 
-Crea el perfil del usuario si no existe, o lo actualiza si ya existe (upsert). Las habilidades (`skills`) se reemplazan por completo en cada guardado.
+Crea el perfil del usuario si no existe, o lo actualiza si ya existe (upsert). Las habilidades (`skills`) se reemplazan por completo en cada guardado. Los campos ausentes o vacíos se guardan como `NULL`. Las reglas de validación están en `backend/src/models/profile.fields.js`.
 
 ## Headers
 
@@ -217,11 +238,30 @@ Authorization: Bearer JWT_TOKEN
 {
     "firstName": "Juan",
     "lastName": "Pérez",
-    "phone": "3001234567",
+    "email": "juan@email.com",
+    "phone": "+57 3001234567",
+    "documentType": "CC",
+    "documentNumber": "1020304050",
+    "birthDate": "1995-05-10",
     "country": "Colombia",
+    "state": "Antioquia",
     "city": "Medellín",
+    "address": "Calle 10 # 20-30",
+    "postalCode": "050001",
+    "headline": "Desarrollador Full Stack",
+    "summary": "Desarrollador con 4 años de experiencia...",
+    "currentTitle": "Desarrollador Backend",
+    "currentCompany": "Acme S.A.S.",
+    "yearsExperience": 4,
+    "salaryExpectation": 4500000,
+    "educationLevel": "universitario",
+    "institution": "Universidad Nacional de Colombia",
+    "fieldOfStudy": "Ingeniería de Sistemas",
+    "graduationYear": 2019,
+    "languages": "Español (nativo), Inglés (B2)",
     "linkedin": "https://linkedin.com/in/juan",
     "github": "juanperez",
+    "portfolio": "https://juan.dev",
     "skills": ["Java", "Node.js"]
 }
 ```
@@ -234,10 +274,23 @@ Authorization: Bearer JWT_TOKEN
 }
 ```
 
+## Valores permitidos
+
+| Campo | Regla |
+|-------|-------|
+| `documentType` | `CC`, `CE`, `TI`, `PA`, `PPT`, `DNI`, `RUT`, `CURP`, `OTRO` |
+| `educationLevel` | `bachillerato`, `tecnico`, `tecnologo`, `universitario`, `especializacion`, `maestria`, `doctorado` |
+| `birthDate` | `AAAA-MM-DD` |
+| `yearsExperience` | Entero 0–70 |
+| `graduationYear` | Entero 1950–2100 |
+| `salaryExpectation` | Entero ≥ 0 (moneda local, mensual) |
+| `email` | Correo válido |
+
 ## Posibles errores
 
 | Código | Descripción |
 |--------|-------------|
+| 400 | Algún campo no cumple las reglas (el mensaje indica cuáles) |
 | 401 | No se proporcionó token / token mal formado / token inválido o expirado |
 | 500 | Error interno |
 
