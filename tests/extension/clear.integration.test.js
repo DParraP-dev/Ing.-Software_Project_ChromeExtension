@@ -244,6 +244,18 @@ test("cambiar opciones del select conserva la selección aunque su índice siga 
     assert.equal(select.selectedIndex, 1);
 });
 
+test("cambiar solo option.label conserva la selección sin cambiar texto, valor ni índice", (t) => {
+    const app = appFor(t, `<select name="country"><option value="">Elige</option>
+        <option value="CO" label="Colombia">Colombia</option></select>`);
+    fill(app);
+    const select = app.document.querySelector("select");
+    select.options[1].label = "México";
+    assert.equal(select.options[1].textContent, "Colombia");
+    assert.equal(select.value, "CO");
+    assert.deepEqual(clear(app), { ok: true, cleared: 0, skipped: 1 });
+    assert.equal(select.selectedIndex, 1);
+});
+
 test("los handlers durante autocompletado no convierten modificaciones de la página en datos borrables", (t) => {
     const app = appFor(t, "<input name='first_name'>");
     const input = app.document.querySelector("input");
@@ -263,6 +275,7 @@ test("si la confirmación se interrumpe, borrar cubre solo las escrituras ya rea
     const result = apply(app, snapshot);
     assert.equal(result.stale, true);
     assert.equal(result.filled, 1);
+    assert.deepEqual(plain(result.fields), ["firstName"]);
     assert.deepEqual(clear(app), { ok: true, cleared: 1, skipped: 0 });
     assert.equal(first.value, "");
     assert.equal(city.value, "Actualizado por la página");

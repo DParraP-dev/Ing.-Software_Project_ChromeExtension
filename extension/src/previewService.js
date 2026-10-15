@@ -140,10 +140,10 @@
         return { ok: true, previewId, fields, site: site?.name ?? null };
     }
 
-    function stale(filled = 0) {
+    function stale(filled = 0, fields = []) {
         currentPreview = null;
         return {
-            ok: false, stale: true, filled,
+            ok: false, stale: true, filled, fields: [...new Set(fields)],
             error: filled > 0
                 ? "La página cambió después de completar " + filled + " campos. Revisa el formulario y vuelve a previsualizar."
                 : "El formulario cambió. Genera una nueva vista previa antes de autocompletar."
@@ -207,7 +207,7 @@
                 const candidates = new Set(FillPro.fieldScanner.collect(preview.document, preview.site));
                 return changes.slice(index).every((pending) => targetUnchanged(pending, preview, candidates));
             };
-            if (!canWrite()) return stale(filled);
+            if (!canWrite()) return stale(filled, filledKeys);
             let changedDuringFocus = false;
             const options = {
                 overwrite: true,
@@ -228,7 +228,7 @@
             const status = target.element.tagName === "SELECT"
                 ? FillPro.fieldFiller.fillSelect(target.element, Number(target.value), options)
                 : FillPro.fieldFiller.fillText(target.element, target.value, options);
-            if (changedDuringFocus) return stale(filled);
+            if (changedDuringFocus) return stale(filled, filledKeys);
             if (status === "filled") {
                 filled++;
                 filledKeys.push(target.key);

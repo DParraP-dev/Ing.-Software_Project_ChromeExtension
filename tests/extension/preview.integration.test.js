@@ -379,6 +379,7 @@ test("cambiar el root de un campo o sustituir el iframe invalida el snapshot", (
 
 for (const [name, change] of [
     ["texto", (select) => { select.options[1].textContent = "México"; }],
+    ["label sin cambiar texto ni valor", (select) => { select.options[1].label = "México"; }],
     ["valor", (select) => { select.options[1].value = "MX"; }],
     ["estado", (select) => { select.options[1].disabled = true; }],
     ["selección", (select) => { select.selectedIndex = 1; }]
@@ -434,6 +435,7 @@ test("los handlers de la página no permiten sobrescribir el siguiente campo mod
     assert.equal(result.ok, false);
     assert.equal(result.stale, true);
     assert.equal(result.filled, 1);
+    assert.deepEqual(plain(result.fields), ["firstName"]);
     assert.equal(first.value, "Juan Carlos");
     assert.equal(city.value, "Cambio del portal");
 });
@@ -446,7 +448,27 @@ test("un handler de focus que cambia el objetivo lo conserva antes del setter na
     const result = apply(app, snapshot);
     assert.equal(result.ok, false);
     assert.equal(result.stale, true);
+    assert.equal(result.filled, 0);
+    assert.deepEqual(plain(result.fields), []);
     assert.equal(first.value, "Cambio al enfocar");
+});
+
+test("un fallo parcial durante focus devuelve solo las claves completadas para el historial", (t) => {
+    const app = appFor(t, "<input name='first_name'><input name='last_name'><input name='city'>");
+    const first = app.document.querySelector("[name=first_name]");
+    const last = app.document.querySelector("[name=last_name]");
+    const city = app.document.querySelector("[name=city]");
+    const snapshot = preview(app);
+    first.addEventListener("input", () => { first.value = "Formato impuesto por el portal"; });
+    city.addEventListener("focus", () => { city.value = "Cambio al enfocar"; });
+    const result = apply(app, snapshot);
+    assert.equal(result.ok, false);
+    assert.equal(result.stale, true);
+    assert.equal(result.filled, 1);
+    assert.deepEqual(plain(result.fields), ["lastName"]);
+    assert.equal(first.value, "Formato impuesto por el portal");
+    assert.equal(last.value, "Pérez Gómez");
+    assert.equal(city.value, "Cambio al enfocar");
 });
 
 test("un handler de focusin que cambia el siguiente objetivo detiene la escritura antes del setter", (t) => {

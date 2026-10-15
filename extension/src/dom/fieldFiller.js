@@ -162,6 +162,7 @@
         return Array.from(select.options, (option, index) => ({
             value: option.value,
             text: option.textContent || option.label || "",
+            label: option.label || option.textContent || "",
             disabled: option.disabled,
             index
         }));

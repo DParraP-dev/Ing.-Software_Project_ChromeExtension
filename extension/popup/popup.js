@@ -176,6 +176,35 @@ function renderPreview(result, tab, token) {
     document.getElementById("previewTitle").focus();
 }
 
+// Registra el autocompletado en el historial (HU-RF-013). Solo se envía el
+// dominio de la página. Si el registro falla, el autocompletado ya se hizo,
+// así que no se muestra ningún error al usuario.
+async function registerAutofill(token, pageUrl, fields) {
+    if (!/^https?:\/\//i.test(pageUrl || "") || !Array.isArray(fields) || fields.length === 0) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/logs`, {
+            method: "POST",
+            signal: AbortSignal.timeout(5000),
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                website: new URL(pageUrl).hostname,
+                fieldsCompleted: fields
+            })
+        });
+        if (!response.ok) {
+            throw new Error(`El historial respondió con estado ${response.status}.`);
+        }
+    } catch (error) {
+        console.warn("No se pudo registrar el autocompletado en el historial.", error);
+    }
+}
+
 loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (busy) return;
@@ -306,6 +335,11 @@ previewForm.addEventListener("submit", async (event) => {
             previewId: draft.id,
             fields: selectedFields
         }, { frameId: 0 });
+        // Una aplicación parcial también cuenta; previsualizar y borrar no generan historial.
+        // El registro no bloquea el popup ni impide borrar si el backend no responde.
+        if (result?.filled > 0) {
+            void registerAutofill(token, draft.url, result.fields);
+        }
         if (!result?.ok) {
             throw new Error(result?.error || "La página no respondió. Vuelve a previsualizar.");
         }

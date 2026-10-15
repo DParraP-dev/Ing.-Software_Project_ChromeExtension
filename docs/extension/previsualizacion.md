@@ -28,7 +28,21 @@ Los valores se escriben con setters nativos y eventos compatibles con los
 frameworks de los portales. Los selectores usan índices internos de opción para
 distinguir opciones con el mismo `value`; el usuario ve sus etiquetas normales.
 El mensaje antiguo `FILLPRO_AUTOFILL` se rechaza para no saltarse la confirmación.
-Cerrar el popup descarta las correcciones pendientes.
+Cerrar el popup descarta las correcciones pendientes. Cambiar la etiqueta visible
+de una opción (`option.label`) también invalida la confirmación, aunque su valor
+interno y su posición sigan iguales.
+
+## Historial de uso
+
+Después de confirmar, el popup registra en `/logs` únicamente el dominio de la
+página y las claves de los campos completados. No envía los valores del perfil
+ni la ruta, los parámetros o el fragmento de la URL. Si la página interrumpe la
+aplicación después de completar algunos campos, solo se registran esas claves.
+
+Previsualizar, cancelar, confirmar sin escribir y borrar no generan registros de
+uso. El envío al historial es independiente del formulario: un fallo o una
+respuesta lenta del backend no bloquea el popup ni el botón de borrado. La
+petición al historial tiene un límite de cinco segundos y no se reintenta sola.
 
 ## Borrar el autocompletado
 
@@ -46,7 +60,8 @@ El borrado deja los campos vacíos; no restaura su valor anterior. En un selecto
 elimina la selección, incluso si no existe una opción vacía. Los eventos de la
 página pueden rechazar o repoblar un campo: esos casos no se cuentan como borrados.
 
-El historial se acumula entre autocompletados mientras siga abierto el mismo
+Este registro temporal de campos borrables, distinto del historial de uso de la
+web, se acumula entre autocompletados mientras siga abierto el mismo
 documento y se conserva al cerrar/reabrir el popup. No se guarda en disco y se
 pierde al recargar la página o la extensión. Cada borrado consume ese historial
 (incluidos los campos conservados) e invalida la vista previa pendiente. No se
@@ -90,3 +105,8 @@ MySQL. `FILLPRO_SCREENSHOT_DIR` permite guardar capturas con datos ficticios.
 `npm test` cubre el motor original, el backend, la previsualización y el borrado
 en jsdom. `npm run test:browser` ejecuta el popup y todos los content scripts
 en un navegador real, simulando únicamente el transporte de Chrome y la API.
+También comprueba que el historial respete los campos confirmados y los fallos
+de red. Las suites de `tests/historial/` que requieren MySQL se omiten desde la
+raíz si no hay configuración de base de datos; no equivalen a una prueba de la
+API real. Ejecútalas solo con una base de pruebas aislada, siguiendo las
+indicaciones de sus archivos, porque crean y eliminan usuarios de prueba.

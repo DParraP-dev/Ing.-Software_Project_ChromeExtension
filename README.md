@@ -92,7 +92,7 @@ Ing.-Software_Project_ChromeExtension/
 | Previsualización, corrección y confirmación antes de autocompletar | ✅ Implementado |
 | Borrado de campos autocompletados, conservando cambios posteriores | ✅ Implementado |
 | Compatibilidad con LinkedIn, Computrabajo, elempleo, Indeed y ATS| ✅ Implementado |
-| Historial de autocompletados (`/logs`) | 🚧 Planeado (tablas en el esquema, sin endpoints aún) |
+| Historial de autocompletados (`/logs`) | ✅ Implementado; registra campos confirmados desde la extensión |
 | Recuperación de contraseña | 🚧 Planeado (existe la página, sin backend) |
 
 ---
