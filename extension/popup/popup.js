@@ -49,6 +49,31 @@ async function requestProfile(token) {
     return data;
 }
 
+// Registra el autocompletado en el historial (HU-RF-013). Solo se envía el
+// dominio de la página. Si el registro falla, el autocompletado ya se hizo,
+// así que no se muestra ningún error al usuario.
+async function registerAutofill(token, pageUrl, fields) {
+    if (!pageUrl?.startsWith("http")) {
+        return;
+    }
+
+    try {
+        await fetch(`${API_BASE_URL}/logs`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                website: new URL(pageUrl).hostname,
+                fieldsCompleted: fields
+            })
+        });
+    } catch (error) {
+        console.warn("No se pudo registrar el autocompletado en el historial.", error);
+    }
+}
+
 loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     loginButton.disabled = true;
@@ -134,6 +159,7 @@ autofillButton.addEventListener("click", async () => {
             `Se completaron ${result.filled} campos${siteLabel}.${skippedLabel}`,
             "success"
         );
+        await registerAutofill(token, activeTab.url, result.fields);
     } catch (error) {
         const message = error.message?.includes("Receiving end does not exist")
             ? "Recarga la página y vuelve a intentarlo."
