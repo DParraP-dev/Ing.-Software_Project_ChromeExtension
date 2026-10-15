@@ -38,6 +38,7 @@
                 "src/sites/indeed.js",
                 "src/sites/ats.js",
                 "src/autofillService.js",
+                "src/previewService.js",
                 "content.js"
             ],
             "run_at": "document_idle"
