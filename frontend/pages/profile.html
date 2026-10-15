@@ -24,6 +24,16 @@
             tus formularios de postulación.
         </p>
 
+        <section class="profile-switcher" aria-label="Selección de perfil">
+            <div class="profile-switcher__select">
+                <label for="profileSelect">Perfil activo</label>
+                <select id="profileSelect" aria-label="Cambiar entre tus perfiles"></select>
+            </div>
+            <button type="button" class="btn btn--ghost" id="newProfileButton">
+                Crear nuevo perfil +
+            </button>
+        </section>
+
         <aside class="compat-note" aria-label="Portales compatibles">
             <strong>Compatible con los campos más comunes de:</strong>
             LinkedIn, Computrabajo, elempleo, Indeed, Greenhouse, Lever y Workday.
@@ -35,6 +45,12 @@
             <fieldset class="form-section">
                 <legend class="form-section__title">Datos personales</legend>
                 <div class="form-grid">
+                    <div class="field field--full">
+                        <label for="profileName">Nombre de este perfil</label>
+                        <input type="text" id="profileName" name="profileName" maxlength="100" placeholder="Ej.: Perfil Backend, Perfil Diseño…">
+                        <span class="field__hint">Es el nombre con el que verás este perfil en la lista.</span>
+                    </div>
+
                     <div class="field">
                         <label for="firstName">Nombre(s)</label>
                         <input type="text" id="firstName" name="firstName" maxlength="100" autocomplete="given-name" placeholder="Jane">
