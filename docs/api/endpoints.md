@@ -11,8 +11,16 @@ Este documento define el contrato de comunicación entre el Frontend, la Extensi
 | `GET` | `/` | No | ✅ Implementado |
 | `POST` | `/auth/register` | No | ✅ Implementado |
 | `POST` | `/auth/login` | No | ✅ Implementado |
-| `GET` | `/profile` | Sí (JWT) | ✅ Implementado |
-| `POST` | `/profile` | Sí (JWT) | ✅ Implementado |
+| `GET` | `/profile/list` | Sí (JWT) | ✅ Implementado |
+| `POST` | `/profile/create` | Sí (JWT) | ✅ Implementado |
+| `GET` | `/profile` *(opcional `?id=`)* | Sí (JWT) | ✅ Implementado |
+| `POST` | `/profile` *(opcional `?id=`)* | Sí (JWT) | ✅ Implementado |
+
+> **Múltiples perfiles:** un usuario puede tener varios perfiles con nombre.
+> `GET /profile/list` devuelve la lista; `POST /profile/create` crea uno nuevo
+> (vacío); `GET`/`POST /profile?id=<id>` operan sobre un perfil concreto. Sin
+> `?id=`, se usa el primer perfil del usuario (compatibilidad hacia atrás). El
+> perfil activo se recuerda en el cliente (localStorage / chrome.storage).
 
 ## Endpoints planeados (aún no implementados)
 
@@ -293,6 +301,79 @@ Authorization: Bearer JWT_TOKEN
 | 400 | Algún campo no cumple las reglas (el mensaje indica cuáles) |
 | 401 | No se proporcionó token / token mal formado / token inválido o expirado |
 | 500 | Error interno |
+
+---
+
+# 4.1 Listar perfiles
+
+## Endpoint
+
+```http
+GET /profile/list
+```
+
+## Descripción
+
+Devuelve los perfiles del usuario autenticado (solo id y nombre), para poblar el selector de "cambiar perfil".
+
+## Headers
+
+```http
+Authorization: Bearer JWT_TOKEN
+```
+
+## Response Exitosa (200)
+
+```json
+{
+    "profiles": [
+        { "id": 1, "name": "Mi perfil" },
+        { "id": 2, "name": "Perfil Diseño" }
+    ]
+}
+```
+
+---
+
+# 4.2 Crear perfil nuevo
+
+## Endpoint
+
+```http
+POST /profile/create
+```
+
+## Descripción
+
+Crea un perfil nuevo (sin datos) con un nombre. Si no se envía `name`, se usa "Mi perfil".
+
+## Headers
+
+```http
+Authorization: Bearer JWT_TOKEN
+```
+
+## Request
+
+```json
+{ "name": "Perfil Backend" }
+```
+
+## Response Exitosa (201)
+
+```json
+{
+    "message": "Perfil creado correctamente",
+    "profile": { "id": 3, "name": "Perfil Backend" }
+}
+```
+
+---
+
+> **Nota sobre `GET`/`POST /profile`:** aceptan un parámetro opcional `?id=<id>`
+> para operar sobre un perfil concreto. En `POST /profile`, el campo opcional
+> `profileName` renombra el perfil activo. Si el `id` no pertenece al usuario,
+> se responde `404`.
 
 ---
 

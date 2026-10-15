@@ -7,6 +7,14 @@ const loginButton = document.getElementById("loginButton");
 const autofillButton = document.getElementById("autofillButton");
 const logoutButton = document.getElementById("logoutButton");
 const statusElement = document.getElementById("status");
+const profileSelect = document.getElementById("profileSelect");
+
+// Perfil activo recordado en el cliente (chrome.storage), no en la BD.
+const ACTIVE_PROFILE_KEY = "activeProfileId";
+// Valor especial de la opción "crear nuevo perfil" dentro del <select>.
+const CREATE_OPTION_VALUE = "__create__";
+// Página web donde el usuario crea/gestiona perfiles.
+const PROFILE_PAGE_URL = "http://localhost:5500/pages/profile.html";
 
 function setStatus(message = "", type = "info") {
     statusElement.textContent = message;
@@ -28,8 +36,12 @@ async function clearSession() {
     showLoggedIn(false);
 }
 
-async function requestProfile(token) {
-    const response = await fetch(`${API_BASE_URL}/profile`, {
+async function requestProfile(token, profileId = null) {
+    const url = profileId
+        ? `${API_BASE_URL}/profile?id=${encodeURIComponent(profileId)}`
+        : `${API_BASE_URL}/profile`;
+
+    const response = await fetch(url, {
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -48,6 +60,91 @@ async function requestProfile(token) {
 
     return data;
 }
+
+async function getActiveProfileId() {
+    const stored = await chrome.storage.local.get(ACTIVE_PROFILE_KEY);
+    return stored[ACTIVE_PROFILE_KEY] || null;
+}
+
+async function setActiveProfileId(id) {
+    if (id) {
+        await chrome.storage.local.set({ [ACTIVE_PROFILE_KEY]: String(id) });
+    } else {
+        await chrome.storage.local.remove(ACTIVE_PROFILE_KEY);
+    }
+}
+
+// Trae la lista de perfiles del usuario (id + nombre).
+async function fetchProfileList(token) {
+    const response = await fetch(`${API_BASE_URL}/profile/list`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await response.json();
+
+    if (response.status === 401) {
+        await clearSession();
+        throw new Error("Tu sesión expiró. Inicia sesión nuevamente.");
+    }
+    if (!response.ok) {
+        throw new Error(data.error || "No fue posible obtener tus perfiles.");
+    }
+    return data.profiles || [];
+}
+
+// Rellena el <select> con los perfiles y, al final, el acceso rápido para crear.
+function renderProfileOptions(profiles, activeId) {
+    profileSelect.innerHTML = "";
+
+    for (const profile of profiles) {
+        const option = document.createElement("option");
+        option.value = String(profile.id);
+        option.textContent = profile.name || "Perfil sin nombre";
+        profileSelect.appendChild(option);
+    }
+
+    const createOption = document.createElement("option");
+    createOption.value = CREATE_OPTION_VALUE;
+    createOption.textContent = "➕ Crear nuevo perfil…";
+    profileSelect.appendChild(createOption);
+
+    if (activeId && profiles.some((p) => String(p.id) === String(activeId))) {
+        profileSelect.value = String(activeId);
+    } else if (profiles.length > 0) {
+        profileSelect.value = String(profiles[0].id);
+    }
+}
+
+// Carga la lista y la pinta en el desplegable, respetando el perfil activo.
+async function loadProfiles(token) {
+    const profiles = await fetchProfileList(token);
+    let activeId = await getActiveProfileId();
+
+    // Si el perfil activo guardado ya no existe, cae al primero disponible.
+    if (!profiles.some((p) => String(p.id) === String(activeId))) {
+        activeId = profiles.length > 0 ? String(profiles[0].id) : null;
+        await setActiveProfileId(activeId);
+    }
+
+    renderProfileOptions(profiles, activeId);
+}
+
+// Cambio en el desplegable: o se elige un perfil, o se abre la pantalla de creación.
+profileSelect.addEventListener("change", async () => {
+    const value = profileSelect.value;
+
+    if (value === CREATE_OPTION_VALUE) {
+        // Acceso rápido: lleva a la pantalla de creación de perfil en la web.
+        await chrome.tabs.create({ url: PROFILE_PAGE_URL });
+        const activeId = await getActiveProfileId();
+        if (activeId) {
+            profileSelect.value = String(activeId);
+        }
+        return;
+    }
+
+    await setActiveProfileId(value);
+    setStatus("Perfil activo actualizado.", "success");
+});
 
 // Registra el autocompletado en el historial (HU-RF-013). Solo se envía el
 // dominio de la página. Si el registro falla, el autocompletado ya se hizo,
@@ -99,6 +196,12 @@ loginForm.addEventListener("submit", async (event) => {
         loginForm.reset();
         showLoggedIn(true);
         setStatus("Sesión iniciada correctamente.", "success");
+
+        try {
+            await loadProfiles(data.token);
+        } catch (profileError) {
+            console.warn("No se pudieron cargar los perfiles.", profileError);
+        }
     } catch (error) {
         setStatus(error.message || "No se pudo conectar con el servidor.", "error");
     } finally {
@@ -117,7 +220,8 @@ autofillButton.addEventListener("click", async () => {
             throw new Error("Inicia sesión para usar el autocompletado.");
         }
 
-        const { profile, skills, accountEmail } = await requestProfile(token);
+        const activeProfileId = await getActiveProfileId();
+        const { profile, skills, accountEmail } = await requestProfile(token, activeProfileId);
         if (!profile) {
             throw new Error("Completa y guarda tu perfil antes de autocompletar.");
         }
@@ -176,8 +280,22 @@ logoutButton.addEventListener("click", async () => {
 });
 
 getStoredToken()
-    .then((token) => showLoggedIn(Boolean(token)))
+    .then(async (token) => {
+        showLoggedIn(Boolean(token));
+        if (token) {
+            try {
+                await loadProfiles(token);
+            } catch (error) {
+                console.warn("No se pudieron cargar los perfiles.", error);
+            }
+        }
+    })
     .catch(() => {
         showLoggedIn(false);
         setStatus("No fue posible leer la sesión guardada.", "error");
     });
+
+// Al cerrar sesión, olvida también el perfil activo guardado.
+logoutButton.addEventListener("click", async () => {
+    await setActiveProfileId(null);
+});

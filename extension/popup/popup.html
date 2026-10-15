@@ -78,6 +78,20 @@
             outline: 3px solid rgba(89, 86, 233, 0.14);
         }
 
+        select {
+            width: 100%;
+            padding: 10px 11px;
+            border: 1px solid #bac3d2;
+            border-radius: 8px;
+            font: inherit;
+            background: #ffffff;
+        }
+
+        select:focus {
+            border-color: #5956e9;
+            outline: 3px solid rgba(89, 86, 233, 0.14);
+        }
+
         button {
             padding: 11px 14px;
             border: 0;
@@ -152,6 +166,11 @@
 
     <section id="autofillPanel" class="panel hidden">
         <div class="autofill-panel">
+            <label for="profileSelect">
+                Perfil activo
+                <select id="profileSelect"></select>
+            </label>
+
             <p class="autofill-copy">
                 Abre un formulario en la pestaña actual y pulsa el botón para completarlo con tu perfil.
                 Compatible con LinkedIn, Computrabajo, elempleo, Indeed y formularios de empleo comunes.
