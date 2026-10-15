@@ -1,7 +1,7 @@
 // HU-RF-013: prueba de punta a punta del registro del historial desde la extensión.
 //
 // Levanta el backend real en el puerto 3000 (el que usa el popup), carga la
-// extensión en Chromium, inicia sesión desde el popup, autocompleta
+// extensión en Chromium, inicia sesión desde el popup, previsualiza y confirma
 // extension/test-form.html y revisa que el registro quede en la base de datos.
 //
 // Uso (desde la carpeta backend/, con MySQL encendido y el backend detenido):
@@ -16,6 +16,7 @@ const assert = require("node:assert/strict");
 const crypto = require("node:crypto");
 const fs = require("node:fs");
 const path = require("node:path");
+const { setTimeout: delay } = require("node:timers/promises");
 const { cleanupTestUsers } = require("./limpieza");
 
 const ROOT = path.join(__dirname, "..", "..");
@@ -111,14 +112,40 @@ describe("Registro del historial desde la extensión", { skip: getSkipReason() }
     // Igual que el popup real: el formulario debe ser la pestaña activa
     async function autofillFrom(popup, formPage) {
         await formPage.bringToFront();
+        const logsBefore = await api("GET", "/logs", { token: user.token });
+        const beforeValues = await formPage.locator("#jobApplicationForm input")
+            .evaluateAll((inputs) => inputs.map((input) => input.value));
         await popup.evaluate(() => document.getElementById("autofillButton").click());
+        await popup.waitForSelector("#previewPanel:not(.hidden)");
+        await popup.waitForFunction(
+            () => !document.getElementById("previewFields").disabled,
+            null,
+            { polling: 100 }
+        );
+        assert.deepEqual(await formPage.locator("#jobApplicationForm input")
+            .evaluateAll((inputs) => inputs.map((input) => input.value)), beforeValues,
+        "previsualizar no escribe todavía en el formulario");
+        assert.deepEqual(await api("GET", "/logs", { token: user.token }), logsBefore,
+            "previsualizar no registra todavía un autocompletado");
+        await popup.evaluate(() => document.getElementById("confirmButton").click());
         await popup.waitForFunction(
             () => !document.getElementById("autofillButton").disabled
-                && document.getElementById("status").textContent !== "Buscando campos compatibles...",
+                && ["success", "error"].includes(document.getElementById("status").dataset.type),
             null,
             { polling: 100 }
         );
         return popup.textContent("#status");
+    }
+
+    // El historial es asíncrono para no bloquear el autocompletado.
+    async function waitForRecordedLog() {
+        const deadline = Date.now() + 5000;
+        while (Date.now() < deadline) {
+            const logs = await api("GET", "/logs", { token: user.token });
+            if (logs.length > 0) return logs;
+            await delay(50);
+        }
+        assert.fail("El autocompletado confirmado no apareció en el historial en 5 segundos");
     }
 
     before(async () => {
@@ -181,7 +208,7 @@ describe("Registro del historial desde la extensión", { skip: getSkipReason() }
         const status = await autofillFrom(popup, formPage);
         assert.match(status, /^Se completaron 7 campos/);
 
-        const logs = await api("GET", "/logs", { token: user.token });
+        const logs = await waitForRecordedLog();
         assert.equal(logs.length, 1);
         assert.equal(logs[0].website, "localhost");
         assert.deepEqual(logs[0].fieldsCompleted, EXPECTED_FIELDS);
