@@ -189,6 +189,68 @@ body {
     background: var(--indigo-600);
 }
 
+.btn--ghost {
+    background: var(--white);
+    color: var(--indigo-600);
+    border: 1px solid var(--slate-200);
+    padding: 11px 18px;
+    white-space: nowrap;
+}
+
+.btn--ghost:hover {
+    border-color: var(--indigo-600);
+    background: var(--slate-50);
+}
+
+/* Barra para cambiar entre perfiles */
+.profile-switcher {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    margin: 0 0 28px;
+    padding: 16px;
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+}
+
+.profile-switcher__select {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.profile-switcher__select label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--slate-900);
+}
+
+.profile-switcher select {
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 11px 14px;
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-md);
+    background: var(--white);
+    color: var(--slate-900);
+}
+
+.profile-switcher select:focus {
+    outline: none;
+    border-color: var(--indigo-600);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+@media (max-width: 560px) {
+    .profile-switcher {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
 .btn:active {
     transform: translateY(1px);
 }

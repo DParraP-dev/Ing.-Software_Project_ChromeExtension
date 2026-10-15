@@ -79,6 +79,20 @@
             outline: 3px solid rgba(89, 86, 233, 0.14);
         }
 
+        .profile-select {
+            width: 100%;
+            padding: 10px 11px;
+            border: 1px solid #bac3d2;
+            border-radius: 8px;
+            font: inherit;
+            background: #ffffff;
+        }
+
+        .profile-select:focus {
+            border-color: #5956e9;
+            outline: 3px solid rgba(89, 86, 233, 0.14);
+        }
+
         input:disabled,
         select:disabled,
         textarea:disabled {
@@ -258,6 +272,11 @@
 
     <section id="autofillPanel" class="panel hidden">
         <div class="autofill-panel">
+            <label for="profileSelect">
+                Perfil activo
+                <select id="profileSelect" class="profile-select"></select>
+            </label>
+
             <p class="autofill-copy">
                 Revisa y corrige los datos de tu perfil antes de completar el formulario de esta pestaña.
                 Compatible con LinkedIn, Computrabajo, elempleo, Indeed y formularios de empleo comunes.

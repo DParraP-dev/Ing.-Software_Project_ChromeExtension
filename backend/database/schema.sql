@@ -29,15 +29,19 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- ------------------------------------------------------------
--- profiles: datos del perfil laboral, uno por usuario
+-- profiles: datos del perfil laboral. Un usuario puede tener
+-- VARIOS perfiles (p. ej. una profesión distinta por perfil),
+-- cada uno identificado por `profile_name`.
 -- Los campos siguen los formularios más comunes de portales de
 -- empleo (LinkedIn, Computrabajo, elempleo, ATS) — HU-RNF-011.
--- Si ya tienes la base creada, ejecuta en su lugar:
+-- Si ya tienes la base creada, ejecuta en su lugar las migraciones:
 --   database/migrations/profile_fields.sql
+--   database/migrations/profile_name.sql
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS profiles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
+    profile_name VARCHAR(100) NOT NULL DEFAULT 'Mi perfil',
     -- Datos personales
     first_name VARCHAR(100),
     last_name VARCHAR(100),

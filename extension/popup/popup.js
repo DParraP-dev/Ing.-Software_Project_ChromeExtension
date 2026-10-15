@@ -14,6 +14,14 @@ const cancelPreviewButton = document.getElementById("cancelPreviewButton");
 const previewFields = document.getElementById("previewFields");
 const previewSummary = document.getElementById("previewSummary");
 const statusElement = document.getElementById("status");
+const profileSelect = document.getElementById("profileSelect");
+
+// Perfil activo recordado en el cliente (chrome.storage), no en la BD.
+const ACTIVE_PROFILE_KEY = "activeProfileId";
+// Valor especial de la opción "crear nuevo perfil" dentro del <select>.
+const CREATE_OPTION_VALUE = "__create__";
+// Página web donde el usuario crea/gestiona perfiles.
+const PROFILE_PAGE_URL = "http://localhost:5500/pages/profile.html";
 
 let preview = null;
 let busy = false;
@@ -44,6 +52,9 @@ function setBusy(value) {
         button.disabled = value;
     }
     previewFields.disabled = value;
+    if (profileSelect) {
+        profileSelect.disabled = value;
+    }
     updateSelection();
 }
 
@@ -67,7 +78,7 @@ async function getStoredToken() {
 }
 
 async function clearSession() {
-    await chrome.storage.local.remove("token");
+    await chrome.storage.local.remove(["token", ACTIVE_PROFILE_KEY]);
     loginForm.reset();
     showLoggedIn(false);
 }
@@ -82,8 +93,11 @@ function errorMessage(error) {
     return error.message || "No fue posible completar la operación.";
 }
 
-async function requestProfile(token) {
-    const response = await fetch(API_BASE_URL + "/profile", {
+async function requestProfile(token, profileId = null) {
+    const url = profileId
+        ? API_BASE_URL + "/profile?id=" + encodeURIComponent(profileId)
+        : API_BASE_URL + "/profile";
+    const response = await fetch(url, {
         headers: { Authorization: "Bearer " + token }
     });
 
@@ -96,6 +110,71 @@ async function requestProfile(token) {
         throw new Error(data.error || "No fue posible obtener tu perfil.");
     }
     return data;
+}
+
+async function getActiveProfileId() {
+    const stored = await chrome.storage.local.get(ACTIVE_PROFILE_KEY);
+    return stored[ACTIVE_PROFILE_KEY] || null;
+}
+
+async function setActiveProfileId(id) {
+    if (id) {
+        await chrome.storage.local.set({ [ACTIVE_PROFILE_KEY]: String(id) });
+    } else {
+        await chrome.storage.local.remove(ACTIVE_PROFILE_KEY);
+    }
+}
+
+// Trae la lista de perfiles del usuario (id + nombre).
+async function fetchProfileList(token) {
+    const response = await fetch(API_BASE_URL + "/profile/list", {
+        headers: { Authorization: "Bearer " + token }
+    });
+    if (response.status === 401) {
+        await clearSession();
+        throw new Error("Tu sesión expiró. Inicia sesión nuevamente.");
+    }
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.error || "No fue posible obtener tus perfiles.");
+    }
+    return data.profiles || [];
+}
+
+// Rellena el <select> con los perfiles y, al final, el acceso rápido para crear.
+function renderProfileOptions(profiles, activeId) {
+    profileSelect.replaceChildren();
+
+    for (const profile of profiles) {
+        const option = document.createElement("option");
+        option.value = String(profile.id);
+        option.textContent = profile.name || "Perfil sin nombre";
+        profileSelect.append(option);
+    }
+
+    const createOption = document.createElement("option");
+    createOption.value = CREATE_OPTION_VALUE;
+    createOption.textContent = "➕ Crear nuevo perfil…";
+    profileSelect.append(createOption);
+
+    if (activeId && profiles.some((p) => String(p.id) === String(activeId))) {
+        profileSelect.value = String(activeId);
+    } else if (profiles.length > 0) {
+        profileSelect.value = String(profiles[0].id);
+    }
+}
+
+// Carga la lista y la pinta, respetando (o corrigiendo) el perfil activo.
+async function loadProfiles(token) {
+    const profiles = await fetchProfileList(token);
+    let activeId = await getActiveProfileId();
+
+    if (!profiles.some((p) => String(p.id) === String(activeId))) {
+        activeId = profiles.length > 0 ? String(profiles[0].id) : null;
+        await setActiveProfileId(activeId);
+    }
+
+    renderProfileOptions(profiles, activeId);
 }
 
 function renderPreview(result, tab, token) {
@@ -205,6 +284,27 @@ async function registerAutofill(token, pageUrl, fields) {
     }
 }
 
+// Cambio en el desplegable: elegir un perfil o abrir la pantalla de creación.
+profileSelect.addEventListener("change", async () => {
+    if (busy) return;
+    const value = profileSelect.value;
+
+    if (value === CREATE_OPTION_VALUE) {
+        await chrome.tabs.create({ url: PROFILE_PAGE_URL });
+        const activeId = await getActiveProfileId();
+        if (activeId) {
+            profileSelect.value = String(activeId);
+        }
+        return;
+    }
+
+    await setActiveProfileId(value);
+    // Cambiar de perfil descarta cualquier vista previa en curso, que
+    // correspondía al perfil anterior.
+    discardPreview();
+    setStatus("Perfil activo actualizado.", "success");
+});
+
 loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (busy) return;
@@ -229,6 +329,11 @@ loginForm.addEventListener("submit", async (event) => {
         await chrome.storage.local.set({ token: data.token });
         loginForm.reset();
         showLoggedIn(true);
+        try {
+            await loadProfiles(data.token);
+        } catch (profileError) {
+            console.warn("No se pudieron cargar los perfiles.", profileError);
+        }
         setStatus("Sesión iniciada. Ya puedes previsualizar los datos.", "success");
     } catch (error) {
         setStatus(errorMessage(error), "error");
@@ -253,7 +358,8 @@ autofillButton.addEventListener("click", async () => {
         if (!activeTab?.id || !/^https?:\/\//i.test(activeTab.url || "")) {
             throw new Error("Abre una página web con un formulario para previsualizar.");
         }
-        const { profile, skills, accountEmail } = await requestProfile(token);
+        const activeProfileId = await getActiveProfileId();
+        const { profile, skills, accountEmail } = await requestProfile(token, activeProfileId);
         if (!profile) {
             throw new Error("Completa y guarda tu perfil en FillPro antes de previsualizar.");
         }
@@ -385,7 +491,16 @@ logoutButton.addEventListener("click", async () => {
 
 setBusy(true);
 getStoredToken()
-    .then((token) => showLoggedIn(Boolean(token)))
+    .then(async (token) => {
+        showLoggedIn(Boolean(token));
+        if (token) {
+            try {
+                await loadProfiles(token);
+            } catch (error) {
+                console.warn("No se pudieron cargar los perfiles.", error);
+            }
+        }
+    })
     .catch(() => {
         showLoggedIn(false);
         setStatus("No fue posible leer la sesión guardada.", "error");
