@@ -8,6 +8,7 @@
     const FillPro = (global.FillPro = global.FillPro || {});
     let currentPreview = null;
     let sequence = 0;
+    const autofilledTargets = new Map();
 
     function readValue(element) {
         return element.tagName === "SELECT" ? String(element.selectedIndex) : String(element.value ?? "");
@@ -208,10 +209,22 @@
             };
             if (!canWrite()) return stale(filled);
             let changedDuringFocus = false;
-            const options = { overwrite: true, beforeWrite: () => {
-                changedDuringFocus = !canWrite();
-                return !changedDuringFocus;
-            } };
+            const options = {
+                overwrite: true,
+                beforeWrite: () => {
+                    changedDuringFocus = !canWrite();
+                    return !changedDuringFocus;
+                },
+                afterWrite: () => {
+                    const currentValue = readValue(target.element);
+                    if (currentValue !== target.currentValue) {
+                        autofilledTargets.set(target.element, {
+                            ...target, currentValue,
+                            document: preview.document, href: preview.href, site: preview.site
+                        });
+                    }
+                }
+            };
             const status = target.element.tagName === "SELECT"
                 ? FillPro.fieldFiller.fillSelect(target.element, Number(target.value), options)
                 : FillPro.fieldFiller.fillText(target.element, target.value, options);
@@ -226,5 +239,31 @@
         return { ok: true, filled, fields: [...new Set(filledKeys)], skipped, site: preview.site?.name ?? null };
     }
 
-    FillPro.previewService = { create, apply };
+    function clear() {
+        currentPreview = null;
+        const targets = [...autofilledTargets.values()];
+        // A preserved edit becomes user-owned; a later clear must not reclaim it.
+        autofilledTargets.clear();
+        const written = [];
+
+        for (const target of targets) {
+            const canClear = () => {
+                const candidates = new Set(FillPro.fieldScanner.collect(target.document, target.site));
+                return targetUnchanged(target, target, candidates);
+            };
+            if (!canClear()) continue;
+            FillPro.fieldFiller.clearField(target.element, {
+                beforeWrite: canClear,
+                afterWrite: () => written.push(target)
+            });
+        }
+
+        // Later handlers can repopulate earlier fields or replace their document.
+        const cleared = written.filter((target) => target.element.isConnected
+            && sameContext(target.context, contextOf(target.element, target.document))
+            && readValue(target.element) === (target.element.tagName === "SELECT" ? "-1" : "")).length;
+        return { ok: true, cleared, skipped: targets.length - cleared };
+    }
+
+    FillPro.previewService = { create, apply, clear };
 })(globalThis);

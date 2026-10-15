@@ -30,6 +30,28 @@ distinguir opciones con el mismo `value`; el usuario ve sus etiquetas normales.
 El mensaje antiguo `FILLPRO_AUTOFILL` se rechaza para no saltarse la confirmación.
 Cerrar el popup descarta las correcciones pendientes.
 
+## Borrar el autocompletado
+
+**Borrar autocompletado** vacía los controles que FillPro haya escrito en el
+documento actual, sin consultar la API, modificar el perfil ni enviar el
+formulario. También funciona si el backend está desconectado, siempre que el
+panel de acciones esté disponible.
+
+Se conservan los campos omitidos, los valores que FillPro no modificó y las
+correcciones posteriores. También se conservan controles reemplazados, ocultos,
+no editables o que hayan cambiado de identidad, formulario o contexto. El popup
+informa cuántos campos borró y cuántos conservó.
+
+El borrado deja los campos vacíos; no restaura su valor anterior. En un selector
+elimina la selección, incluso si no existe una opción vacía. Los eventos de la
+página pueden rechazar o repoblar un campo: esos casos no se cuentan como borrados.
+
+El historial se acumula entre autocompletados mientras siga abierto el mismo
+documento y se conserva al cerrar/reabrir el popup. No se guarda en disco y se
+pierde al recargar la página o la extensión. Cada borrado consume ese historial
+(incluidos los campos conservados) e invalida la vista previa pendiente. No se
+intenta adivinar qué valores provienen de versiones anteriores de FillPro.
+
 ## Prueba manual
 
 1. Inicia el backend y guarda un perfil desde el frontend. Si vienes de una
@@ -45,6 +67,10 @@ Cerrar el popup descarta las correcciones pendientes.
    aparezcan desmarcados al abrir otra vista previa.
 7. Repite con las réplicas de `extension/test-forms/` y comprueba que la selección
    y los formatos del motor de compatibilidad sigan funcionando.
+8. Después de autocompletar, corrige la ciudad directamente en el formulario.
+   Cierra/reabre el popup y pulsa **Borrar autocompletado**: deben vaciarse los
+   demás campos escritos por FillPro y conservarse la ciudad corregida. El perfil
+   guardado no cambia. Repetir el borrado sin otro autocompletado no modifica nada.
 
 ## Pruebas automatizadas
 
@@ -61,6 +87,6 @@ La suite de navegador requiere Chrome instalado. Puedes elegir otro canal con
 API simulada: no necesita credenciales, no usa tu perfil de Chrome y no modifica
 MySQL. `FILLPRO_SCREENSHOT_DIR` permite guardar capturas con datos ficticios.
 
-`npm test` cubre el motor original, el backend y los casos de previsualización
+`npm test` cubre el motor original, el backend, la previsualización y el borrado
 en jsdom. `npm run test:browser` ejecuta el popup y todos los content scripts
 en un navegador real, simulando únicamente el transporte de Chrome y la API.

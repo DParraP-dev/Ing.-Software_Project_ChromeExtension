@@ -90,6 +90,7 @@ Ing.-Software_Project_ChromeExtension/
 | Guardar / actualizar perfil (`POST /profile`) | ✅ Implementado |
 | Autocompletado de formularios (extensión) | ✅ Implementado |
 | Previsualización, corrección y confirmación antes de autocompletar | ✅ Implementado |
+| Borrado de campos autocompletados, conservando cambios posteriores | ✅ Implementado |
 | Compatibilidad con LinkedIn, Computrabajo, elempleo, Indeed y ATS| ✅ Implementado |
 | Historial de autocompletados (`/logs`) | 🚧 Planeado (tablas en el esquema, sin endpoints aún) |
 | Recuperación de contraseña | 🚧 Planeado (existe la página, sin backend) |

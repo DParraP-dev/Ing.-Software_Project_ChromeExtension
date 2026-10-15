@@ -299,6 +299,107 @@ test("visible controls inside display:contents containers remain eligible", asyn
     assert.equal(await app.target.locator("#candidate-given-name").inputValue(), "Ana");
 });
 
+test("clear removes all FillPro values after reopening the popup, without contacting the API", async (t) => {
+    const options = {};
+    const app = await fixture(t, options);
+    for (const name of ["Previsualizar autocompletado", "Borrar autocompletado", "Cerrar sesión"]) {
+        const bounds = await app.popup.getByRole("button", { name, exact: true }).boundingBox();
+        assert.ok(bounds && bounds.y + bounds.height <= 600, name + " must fit inside the popup");
+    }
+    if (process.env.FILLPRO_SCREENSHOT_DIR) {
+        await fs.mkdir(process.env.FILLPRO_SCREENSHOT_DIR, { recursive: true });
+        await app.popup.screenshot({ path: path.join(process.env.FILLPRO_SCREENSHOT_DIR, "fillpro-clear-autofill.png"), fullPage: true });
+    }
+    await app.openPreview();
+    await app.popup.getByRole("button", { name: "Confirmar y autocompletar" }).click();
+    await app.popup.waitForFunction(() => document.getElementById("status").dataset.type === "success");
+    assert.equal((await app.values()).filter(Boolean).length, 7);
+    options.offline = true;
+    await app.popup.reload();
+    await app.popup.getByRole("button", { name: "Borrar autocompletado" }).click();
+    await app.popup.waitForFunction(() => document.getElementById("status").textContent.includes("Se borraron 7"));
+    assert.deepEqual(await app.values(), Array(7).fill(""));
+    assert.equal(app.state.requests.length, 1, "Only the earlier profile GET is allowed");
+    assert.equal(app.state.storage.token, "test-session");
+    assert.equal(app.state.messages.filter((m) => m.type === "FILLPRO_CLEAR_AUTOFILL").length, 1);
+    const events = await app.target.evaluate(() => formEvents);
+    assert.equal(events.filter((event) => event.type === "input").length, 14);
+    assert.equal(events.filter((event) => event.type === "change").length, 14);
+    assert.equal(events.filter((event) => event.type === "submit").length, 0);
+    await app.popup.getByRole("button", { name: "Borrar autocompletado" }).click();
+    await app.popup.waitForFunction(() => document.getElementById("status").textContent.startsWith("No hay campos"));
+    assert.deepEqual(await app.target.evaluate(() => formEvents), events);
+});
+
+test("clear preserves pre-existing values, omitted fields and corrections made after autofill", async (t) => {
+    const app = await fixture(t, { setup: async (page) => {
+        await page.locator("#candidate-given-name").fill("Ana");
+        await page.locator("#code-portfolio").fill("https://example.test/portfolio");
+    } });
+    await app.openPreview();
+    await app.popup.getByRole("checkbox", { name: "Incluir GitHub o portafolio de código", exact: true }).uncheck();
+    await app.popup.getByRole("button", { name: "Confirmar y autocompletar" }).click();
+    await app.popup.waitForFunction(() => document.getElementById("status").dataset.type === "success");
+    await app.target.locator("#location-city").fill("Medellín");
+    await app.popup.getByRole("button", { name: "Borrar autocompletado" }).click();
+    await app.popup.waitForFunction(() => document.getElementById("status").textContent.includes("Se borraron 4"));
+    assert.match(await app.popup.locator("#status").textContent(), /Se conservó 1 campo/);
+    assert.deepEqual(await app.values(), ["Ana", "", "", "", "Medellín", "", "https://example.test/portfolio"]);
+});
+
+test("clear empties textareas and selects even without an empty option", async (t) => {
+    const app = await fixture(t, { setup: async (page) => {
+        await page.evaluate(() => {
+            document.getElementById("location-city").outerHTML = '<textarea id="location-city" name="city"></textarea>';
+            document.getElementById("applicant-country").outerHTML =
+                '<select id="applicant-country" name="country"><option value="MX">México</option>'
+                + '<option value="CO">Colombia</option></select>';
+        });
+    } });
+    await app.openPreview();
+    await app.popup.getByRole("checkbox", { name: "Incluir País de residencia", exact: true }).check();
+    await app.popup.getByRole("button", { name: "Confirmar y autocompletar" }).click();
+    await app.popup.waitForFunction(() => document.getElementById("status").dataset.type === "success");
+    assert.equal(await app.target.locator("#location-city").inputValue(), "Bogotá");
+    assert.equal(await app.target.locator("#applicant-country").inputValue(), "CO");
+    await app.popup.getByRole("button", { name: "Borrar autocompletado" }).click();
+    await app.popup.waitForFunction(() => document.getElementById("status").textContent.includes("Se borraron 7"));
+    assert.equal(await app.target.locator("#location-city").inputValue(), "");
+    assert.equal(await app.target.locator("#applicant-country").inputValue(), "");
+    assert.equal(await app.target.locator("#applicant-country").evaluate((el) => el.selectedIndex), -1);
+});
+
+test("clear with no recorded autofill is a no-op even when the backend is offline", async (t) => {
+    const app = await fixture(t, { offline: true });
+    await app.target.locator("#candidate-given-name").fill("Valor manual");
+    const events = await app.target.evaluate(() => formEvents);
+    await app.popup.getByRole("button", { name: "Borrar autocompletado" }).click();
+    await app.popup.waitForFunction(() => document.getElementById("status").textContent.startsWith("No hay campos"));
+    assert.deepEqual(await app.values(), ["Valor manual", "", "", "", "", "", ""]);
+    assert.deepEqual(await app.target.evaluate(() => formEvents), events);
+    assert.equal(app.state.requests.length, 0);
+});
+
+test("clear handles an unavailable content script without changes or API requests", async (t) => {
+    const app = await fixture(t, { noReceiver: true });
+    await app.popup.getByRole("button", { name: "Borrar autocompletado" }).click();
+    await app.popup.waitForFunction(() => document.getElementById("status").dataset.type === "error");
+    assert.match(await app.popup.locator("#status").textContent(), /Recarga la extensión y esta página/);
+    assert.deepEqual(await app.values(), Array(7).fill(""));
+    assert.equal(app.state.requests.length, 0);
+    assert.equal(await app.popup.locator("#clearAutofillButton").isEnabled(), true);
+});
+
+test("clear on a restricted page gives an actionable error without sending a message", async (t) => {
+    const app = await fixture(t);
+    app.state.activeTab.url = "chrome://extensions/";
+    await app.popup.getByRole("button", { name: "Borrar autocompletado" }).click();
+    await app.popup.waitForFunction(() => document.getElementById("status").dataset.type === "error");
+    assert.match(await app.popup.locator("#status").textContent(), /Abre una página web con un formulario/);
+    assert.equal(app.state.messages.length, 0);
+    assert.equal(app.state.requests.length, 0);
+});
+
 test("login/logout still work and login does not write any fields", async (t) => {
     const app = await fixture(t, { loggedOut: true });
     await app.popup.getByLabel("Correo", { exact: true }).fill("demo@example.test");

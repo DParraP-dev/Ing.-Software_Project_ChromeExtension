@@ -7,6 +7,7 @@ const loginForm = document.getElementById("loginForm");
 const previewForm = document.getElementById("previewForm");
 const loginButton = document.getElementById("loginButton");
 const autofillButton = document.getElementById("autofillButton");
+const clearAutofillButton = document.getElementById("clearAutofillButton");
 const logoutButton = document.getElementById("logoutButton");
 const confirmButton = document.getElementById("confirmButton");
 const cancelPreviewButton = document.getElementById("cancelPreviewButton");
@@ -39,7 +40,7 @@ function updateSelection() {
 
 function setBusy(value) {
     busy = value;
-    for (const button of [loginButton, autofillButton, logoutButton, cancelPreviewButton]) {
+    for (const button of [loginButton, autofillButton, clearAutofillButton, logoutButton, cancelPreviewButton]) {
         button.disabled = value;
     }
     previewFields.disabled = value;
@@ -238,6 +239,42 @@ autofillButton.addEventListener("click", async () => {
         }
         renderPreview(result, activeTab, token);
         setStatus();
+    } catch (error) {
+        setStatus(errorMessage(error), "error");
+    } finally {
+        setBusy(false);
+    }
+});
+
+clearAutofillButton.addEventListener("click", async () => {
+    if (busy) return;
+    setBusy(true);
+    discardPreview();
+    setStatus("Borrando los campos autocompletados...");
+
+    try {
+        const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (!activeTab?.id || !/^https?:\/\//i.test(activeTab.url || "")) {
+            throw new Error("Abre una página web con un formulario para borrar el autocompletado.");
+        }
+        // Clearing belongs to this page: it needs neither a profile request nor a database update.
+        const result = await chrome.tabs.sendMessage(activeTab.id, {
+            type: "FILLPRO_CLEAR_AUTOFILL"
+        }, { frameId: 0 });
+        if (!result?.ok || !Number.isInteger(result.cleared) || result.cleared < 0
+            || !Number.isInteger(result.skipped) || result.skipped < 0) {
+            throw new Error(result?.error || "No fue posible borrar el autocompletado. Recarga la extensión y esta página.");
+        }
+        let message = result.cleared === 0
+            ? result.skipped > 0 ? "No se borraron campos." : "No hay campos autocompletados por FillPro para borrar en esta página."
+            : result.cleared === 1 ? "Se borró 1 campo autocompletado."
+                : `Se borraron ${result.cleared} campos autocompletados.`;
+        if (result.skipped > 0) {
+            message += result.skipped === 1
+                ? " Se conservó 1 campo modificado o no disponible."
+                : ` Se conservaron ${result.skipped} campos modificados o no disponibles.`;
+        }
+        setStatus(message, result.cleared > 0 ? "success" : "info");
     } catch (error) {
         setStatus(errorMessage(error), "error");
     } finally {

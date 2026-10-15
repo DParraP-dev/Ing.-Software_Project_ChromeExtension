@@ -110,6 +110,12 @@
             background: #e9ecf3;
         }
 
+        .clear-button {
+            color: #b42318;
+            background: #ffffff;
+            border: 1px solid #e8b4af;
+        }
+
         .autofill-copy {
             margin: 0;
             color: #505a70;
@@ -259,9 +265,13 @@
             <button id="autofillButton" class="primary-button" type="button">
                 Previsualizar autocompletado
             </button>
+            <button id="clearAutofillButton" class="clear-button" type="button" aria-describedby="clearHint">
+                Borrar autocompletado
+            </button>
             <button id="logoutButton" class="secondary-button" type="button">
                 Cerrar sesión
             </button>
+            <p id="clearHint" class="preview-description">Borrar solo limpia lo escrito por FillPro en esta página. Conserva tus cambios posteriores y no modifica tu perfil.</p>
         </div>
     </section>
 
