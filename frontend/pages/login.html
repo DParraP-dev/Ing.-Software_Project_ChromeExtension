@@ -3,30 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Iniciar sesión — FillPro</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/Icono-FillPro.png">
-    <link rel="stylesheet" href="../css/logstyles.css">
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/tokens.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/auth.css">
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-box">
-            <h1>Login</h1>
-            <p>Sign in to continue.</p>
-            <form id="loginForm">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="tu@correo.com" required>
+    <a class="skip-link" href="#loginForm">Ir al formulario</a>
 
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="******" required>
-
-                <button type="submit" class="login-button">Log in</button>
-            </form>
-            <div class="extra-links">
-                <a href="reset-password.html">Forgot Password?</a>
-                <a href="signup.html">Sign up !</a>
+    <div class="auth">
+        <aside class="auth__brand" aria-label="FillPro">
+            <a class="auth__logo" href="index.html">
+                <img src="../assets/fillpro-logo-white.png" alt="FillPro, ir al inicio" width="498" height="151">
+            </a>
+            <div class="auth__story">
+            <div class="auth__pitch">
+                <h2 class="auth__headline">Tu perfil listo en un clic</h2>
+                <p class="auth__lead">Guarda tus datos una vez. FillPro los propone en cada postulación y tú confirmas antes de enviar.</p>
             </div>
-        </div>
+            <div class="auth__art">
+                <img src="../assets/Image_right_side.png" alt="Una persona completa un formulario de postulación con FillPro" width="1024" height="1024">
+            </div>
+            </div>
+        </aside>
+
+        <main class="auth__main">
+            <div class="auth__panel">
+                <a class="auth__mobile-logo" href="index.html">
+                    <img src="../assets/fillpro-logo.png" alt="FillPro, ir al inicio" width="1020" height="308">
+                </a>
+
+                <header class="auth__header">
+                    <h1 class="auth__title">Inicia sesión</h1>
+                    <p class="auth__subtitle">Entra para continuar con tus postulaciones.</p>
+                </header>
+
+                <div class="alert alert--error" id="loginAlert" role="alert" hidden>
+                    <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-alert-circle"/></svg>
+                    <span data-alert-text></span>
+                </div>
+
+                <form id="loginForm" class="auth__form" novalidate>
+                    <div class="field">
+                        <label class="field__label" for="email">Correo electrónico</label>
+                        <input class="input" type="email" id="email" name="email" placeholder="tu@correo.com" autocomplete="email" required>
+                    </div>
+
+                    <div class="field">
+                        <div class="auth__row">
+                            <label class="field__label" for="password">Contraseña</label>
+                            <a class="auth__small-link" href="reset-password.html">¿Olvidaste tu contraseña?</a>
+                        </div>
+                        <div class="input-group">
+                            <input class="input" type="password" id="password" name="password" autocomplete="current-password" required>
+                            <button type="button" class="input-group__action" data-toggle-password="password" aria-label="Mostrar contraseña" aria-pressed="false">
+                                <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-eye"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn--primary btn--lg btn--block login-button">Iniciar sesión</button>
+                </form>
+
+                <p class="auth__footer">
+                    ¿No tienes cuenta? <a href="signup.html">Crear una cuenta</a>
+                </p>
+            </div>
+        </main>
     </div>
+
+    <script src="../js/ui.js"></script>
+    <script src="../js/auth-ui.js"></script>
     <script src="../js/login.js"></script>
 </body>
 </html>

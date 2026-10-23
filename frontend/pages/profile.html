@@ -5,239 +5,344 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi perfil — FillPro</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/Icono-FillPro.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/tokens.css">
+    <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/profilestyles.css">
 </head>
 <body>
+    <a class="skip-link" href="#profileForm">Ir al formulario</a>
 
     <header class="topbar">
-        <a href="main.html" class="topbar__back">← Volver</a>
-        <img src="../assets/FillPro_Logo_Alt-sinFondo.png" alt="FillPro" class="topbar__logo">
+        <div class="container topbar__inner">
+            <div class="topbar__start">
+                <a href="main.html" class="back-link">
+                    <svg class="icon icon--sm" aria-hidden="true"><use href="../assets/icons.svg#i-arrow-left"/></svg>
+                    Volver
+                </a>
+            </div>
+            <a class="topbar__brand" href="main.html">
+                <img src="../assets/fillpro-logo.png" alt="FillPro" class="topbar__logo" width="1020" height="308">
+            </a>
+            <div class="topbar__end">
+                <span class="save-state" id="saveState" aria-hidden="true"></span>
+            </div>
+        </div>
     </header>
 
-    <main class="page">
-        <h1 class="page__title">Completa tu perfil</h1>
-        <p class="page__subtitle">
-            Esta información es la que FillPro va a usar para autocompletar
-            tus formularios de postulación.
-        </p>
+    <div class="container profile-layout">
+        <aside class="profile-aside" aria-label="Perfil y secciones">
+            <section class="profile-switcher card" aria-label="Selección de perfil">
+                <div class="field profile-switcher__select">
+                    <label class="field__label" for="profileSelect">Perfil activo</label>
+                    <select class="select" id="profileSelect" aria-label="Cambiar entre tus perfiles"></select>
+                </div>
+                <button type="button" class="btn btn--secondary btn--block" id="newProfileButton">
+                    <svg class="icon icon--sm" aria-hidden="true"><use href="../assets/icons.svg#i-plus"/></svg>
+                    Crear nuevo perfil
+                </button>
+            </section>
 
-        <section class="profile-switcher" aria-label="Selección de perfil">
-            <div class="profile-switcher__select">
-                <label for="profileSelect">Perfil activo</label>
-                <select id="profileSelect" aria-label="Cambiar entre tus perfiles"></select>
-            </div>
-            <button type="button" class="btn btn--ghost" id="newProfileButton">
-                Crear nuevo perfil +
-            </button>
-        </section>
+            <nav class="section-nav" aria-label="Secciones del perfil">
+                <a class="section-nav__link" href="#section-personal">
+                    <svg class="icon icon--sm" aria-hidden="true"><use href="../assets/icons.svg#i-user"/></svg>Datos personales
+                </a>
+                <a class="section-nav__link" href="#section-contact">
+                    <svg class="icon icon--sm" aria-hidden="true"><use href="../assets/icons.svg#i-mail"/></svg>Contacto
+                </a>
+                <a class="section-nav__link" href="#section-location">
+                    <svg class="icon icon--sm" aria-hidden="true"><use href="../assets/icons.svg#i-map-pin"/></svg>Ubicación
+                </a>
+                <a class="section-nav__link" href="#section-experience">
+                    <svg class="icon icon--sm" aria-hidden="true"><use href="../assets/icons.svg#i-briefcase"/></svg>Experiencia
+                </a>
+                <a class="section-nav__link" href="#section-education">
+                    <svg class="icon icon--sm" aria-hidden="true"><use href="../assets/icons.svg#i-graduation"/></svg>Formación
+                </a>
+                <a class="section-nav__link" href="#section-links">
+                    <svg class="icon icon--sm" aria-hidden="true"><use href="../assets/icons.svg#i-link"/></svg>Enlaces y habilidades
+                </a>
+            </nav>
 
-        <aside class="compat-note" aria-label="Portales compatibles">
-            <strong>Compatible con los campos más comunes de:</strong>
-            LinkedIn, Computrabajo, elempleo, Indeed, Greenhouse, Lever y Workday.
-            Los campos que dejes vacíos simplemente no se completan.
+            <aside class="compat-note" aria-label="Portales compatibles">
+                <strong>Compatible con los campos más comunes de:</strong>
+                LinkedIn, Computrabajo, elempleo, Indeed, Greenhouse, Lever y Workday.
+                Los campos que dejes vacíos simplemente no se completan.
+            </aside>
         </aside>
 
-        <form id="profileForm" class="profile-form" novalidate>
-
-            <fieldset class="form-section">
-                <legend class="form-section__title">Datos personales</legend>
-                <div class="form-grid">
-                    <div class="field field--full">
-                        <label for="profileName">Nombre de este perfil</label>
-                        <input type="text" id="profileName" name="profileName" maxlength="100" placeholder="Ej.: Perfil Backend, Perfil Diseño…">
-                        <span class="field__hint">Es el nombre con el que verás este perfil en la lista.</span>
+        <main class="profile-main">
+            <header class="page-header profile-header">
+                <h1 class="page-header__title">Completa tu perfil</h1>
+                <p class="page-header__lead">
+                    Esta información es la que FillPro va a usar para autocompletar
+                    tus formularios de postulación.
+                </p>
+                <div class="profile-progress" aria-live="polite">
+                    <div class="progress" role="progressbar" aria-label="Perfil completo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="profileProgressBar">
+                        <div class="progress__bar"></div>
                     </div>
-
-                    <div class="field">
-                        <label for="firstName">Nombre(s)</label>
-                        <input type="text" id="firstName" name="firstName" maxlength="100" autocomplete="given-name" placeholder="Jane">
-                    </div>
-
-                    <div class="field">
-                        <label for="lastName">Apellido(s)</label>
-                        <input type="text" id="lastName" name="lastName" maxlength="100" autocomplete="family-name" placeholder="Doe">
-                    </div>
-
-                    <div class="field">
-                        <label for="email">Correo de contacto</label>
-                        <input type="email" id="email" name="email" maxlength="150" autocomplete="email" placeholder="jane@correo.com">
-                    </div>
-
-                    <div class="field">
-                        <label for="phone">Teléfono / celular</label>
-                        <input type="tel" id="phone" name="phone" maxlength="20" autocomplete="tel" placeholder="+57 300 000 0000">
-                        <span class="field__hint">Incluye el indicativo (+57) para portales internacionales.</span>
-                    </div>
-
-                    <div class="field">
-                        <label for="documentType">Tipo de documento</label>
-                        <select id="documentType" name="documentType">
-                            <option value="">Selecciona…</option>
-                            <option value="CC">Cédula de ciudadanía</option>
-                            <option value="CE">Cédula de extranjería</option>
-                            <option value="TI">Tarjeta de identidad</option>
-                            <option value="PA">Pasaporte</option>
-                            <option value="PPT">Permiso por Protección Temporal (PPT)</option>
-                            <option value="DNI">DNI</option>
-                            <option value="RUT">RUT</option>
-                            <option value="CURP">CURP</option>
-                            <option value="OTRO">Otro</option>
-                        </select>
-                    </div>
-
-                    <div class="field">
-                        <label for="documentNumber">Número de documento</label>
-                        <input type="text" id="documentNumber" name="documentNumber" maxlength="30" placeholder="1020304050">
-                    </div>
-
-                    <div class="field">
-                        <label for="birthDate">Fecha de nacimiento</label>
-                        <input type="date" id="birthDate" name="birthDate" autocomplete="bday">
-                    </div>
+                    <span class="profile-progress__text tabular" id="profileProgressText">0% completo</span>
                 </div>
-            </fieldset>
+            </header>
 
-            <fieldset class="form-section">
-                <legend class="form-section__title">Ubicación</legend>
-                <div class="form-grid">
-                    <div class="field">
-                        <label for="country">País</label>
-                        <input type="text" id="country" name="country" maxlength="100" autocomplete="country-name" placeholder="Colombia">
-                    </div>
+            <div class="alert alert--error" id="profileAlert" role="alert" tabindex="-1" hidden>
+                <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-alert-circle"/></svg>
+                <span data-alert-text></span>
+            </div>
 
-                    <div class="field">
-                        <label for="state">Departamento / estado</label>
-                        <input type="text" id="state" name="state" maxlength="100" autocomplete="address-level1" placeholder="Antioquia">
-                    </div>
+            <form id="profileForm" class="profile-form" novalidate>
 
-                    <div class="field">
-                        <label for="city">Ciudad</label>
-                        <input type="text" id="city" name="city" maxlength="100" autocomplete="address-level2" placeholder="Medellín">
+                <fieldset class="form-section card" id="section-personal">
+                    <legend class="visually-hidden">Datos personales</legend>
+                    <div class="form-section__head" aria-hidden="true">
+                        <span class="form-section__icon"><svg class="icon"><use href="../assets/icons.svg#i-user"/></svg></span>
+                        <div>
+                            <h2 class="form-section__title">Datos personales</h2>
+                            <p class="form-section__desc">Así te identifican los portales de empleo.</p>
+                        </div>
                     </div>
+                    <div class="form-grid">
+                        <div class="field field--full">
+                            <label class="field__label" for="profileName">Nombre de este perfil</label>
+                            <input class="input" type="text" id="profileName" name="profileName" maxlength="100" placeholder="Ej.: Perfil Backend, Perfil Diseño…" aria-describedby="profileName-hint">
+                            <span class="field__hint" id="profileName-hint">Es el nombre con el que verás este perfil en la lista.</span>
+                        </div>
 
-                    <div class="field">
-                        <label for="postalCode">Código postal</label>
-                        <input type="text" id="postalCode" name="postalCode" maxlength="20" autocomplete="postal-code" placeholder="050001">
-                    </div>
+                        <div class="field">
+                            <label class="field__label" for="firstName">Nombre(s)</label>
+                            <input class="input" type="text" id="firstName" name="firstName" maxlength="100" autocomplete="given-name" placeholder="Jane">
+                        </div>
 
-                    <div class="field field--full">
-                        <label for="address">Dirección</label>
-                        <input type="text" id="address" name="address" maxlength="255" autocomplete="street-address" placeholder="Calle 10 # 20-30">
+                        <div class="field">
+                            <label class="field__label" for="lastName">Apellido(s)</label>
+                            <input class="input" type="text" id="lastName" name="lastName" maxlength="100" autocomplete="family-name" placeholder="Doe">
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="documentType">Tipo de documento</label>
+                            <select class="select" id="documentType" name="documentType">
+                                <option value="">Selecciona…</option>
+                                <option value="CC">Cédula de ciudadanía</option>
+                                <option value="CE">Cédula de extranjería</option>
+                                <option value="TI">Tarjeta de identidad</option>
+                                <option value="PA">Pasaporte</option>
+                                <option value="PPT">Permiso por Protección Temporal (PPT)</option>
+                                <option value="DNI">DNI</option>
+                                <option value="RUT">RUT</option>
+                                <option value="CURP">CURP</option>
+                                <option value="OTRO">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="documentNumber">Número de documento</label>
+                            <input class="input" type="text" id="documentNumber" name="documentNumber" maxlength="30" placeholder="1020304050">
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="birthDate">Fecha de nacimiento</label>
+                            <input class="input" type="date" id="birthDate" name="birthDate" autocomplete="bday">
+                        </div>
                     </div>
+                </fieldset>
+
+                <fieldset class="form-section card" id="section-contact">
+                    <legend class="visually-hidden">Contacto</legend>
+                    <div class="form-section__head" aria-hidden="true">
+                        <span class="form-section__icon"><svg class="icon"><use href="../assets/icons.svg#i-mail"/></svg></span>
+                        <div>
+                            <h2 class="form-section__title">Contacto</h2>
+                            <p class="form-section__desc">Dónde te escriben o te llaman los reclutadores.</p>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label class="field__label" for="email">Correo de contacto</label>
+                            <input class="input" type="email" id="email" name="email" maxlength="150" autocomplete="email" placeholder="jane@correo.com">
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="phone">Teléfono / celular</label>
+                            <input class="input" type="tel" id="phone" name="phone" maxlength="20" autocomplete="tel" placeholder="+57 300 000 0000" aria-describedby="phone-hint">
+                            <span class="field__hint" id="phone-hint">Incluye el indicativo (+57) para portales internacionales.</span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section card" id="section-location">
+                    <legend class="visually-hidden">Ubicación</legend>
+                    <div class="form-section__head" aria-hidden="true">
+                        <span class="form-section__icon"><svg class="icon"><use href="../assets/icons.svg#i-map-pin"/></svg></span>
+                        <div>
+                            <h2 class="form-section__title">Ubicación</h2>
+                            <p class="form-section__desc">Se usa en los campos de residencia y dirección.</p>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label class="field__label" for="country">País</label>
+                            <input class="input" type="text" id="country" name="country" maxlength="100" autocomplete="country-name" placeholder="Colombia">
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="state">Departamento / estado</label>
+                            <input class="input" type="text" id="state" name="state" maxlength="100" autocomplete="address-level1" placeholder="Antioquia">
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="city">Ciudad</label>
+                            <input class="input" type="text" id="city" name="city" maxlength="100" autocomplete="address-level2" placeholder="Medellín">
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="postalCode">Código postal</label>
+                            <input class="input" type="text" id="postalCode" name="postalCode" maxlength="20" autocomplete="postal-code" placeholder="050001">
+                        </div>
+
+                        <div class="field field--full">
+                            <label class="field__label" for="address">Dirección</label>
+                            <input class="input" type="text" id="address" name="address" maxlength="255" autocomplete="street-address" placeholder="Calle 10 # 20-30">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section card" id="section-experience">
+                    <legend class="visually-hidden">Perfil profesional y experiencia</legend>
+                    <div class="form-section__head" aria-hidden="true">
+                        <span class="form-section__icon"><svg class="icon"><use href="../assets/icons.svg#i-briefcase"/></svg></span>
+                        <div>
+                            <h2 class="form-section__title">Perfil profesional y experiencia</h2>
+                            <p class="form-section__desc">Tu presentación, tu cargo y lo que esperas ganar.</p>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="field field--full">
+                            <label class="field__label" for="headline">Titular profesional</label>
+                            <input class="input" type="text" id="headline" name="headline" maxlength="150" placeholder="Desarrolladora Full Stack | Node.js · React">
+                        </div>
+
+                        <div class="field field--full">
+                            <label class="field__label" for="summary">Resumen / acerca de mí</label>
+                            <textarea class="textarea" id="summary" name="summary" rows="4" maxlength="2000" placeholder="Cuéntale a los reclutadores quién eres y qué te interesa." aria-describedby="summary-count"></textarea>
+                            <span class="field__hint field__count tabular" id="summary-count" data-count-for="summary">0 / 2000</span>
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="currentTitle">Cargo actual o más reciente</label>
+                            <input class="input" type="text" id="currentTitle" name="currentTitle" maxlength="150" autocomplete="organization-title" placeholder="Desarrolladora Backend">
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="currentCompany">Empresa actual o más reciente</label>
+                            <input class="input" type="text" id="currentCompany" name="currentCompany" maxlength="150" autocomplete="organization" placeholder="Acme S.A.S.">
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="yearsExperience">Años de experiencia</label>
+                            <input class="input" type="number" id="yearsExperience" name="yearsExperience" min="0" max="70" step="1" placeholder="3" inputmode="numeric">
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="salaryExpectation">Aspiración salarial mensual</label>
+                            <input class="input" type="number" id="salaryExpectation" name="salaryExpectation" min="0" step="1" placeholder="4500000" inputmode="numeric" aria-describedby="salaryExpectation-hint">
+                            <span class="field__hint" id="salaryExpectation-hint">Solo números, en tu moneda local.</span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section card" id="section-education">
+                    <legend class="visually-hidden">Educación</legend>
+                    <div class="form-section__head" aria-hidden="true">
+                        <span class="form-section__icon"><svg class="icon"><use href="../assets/icons.svg#i-graduation"/></svg></span>
+                        <div>
+                            <h2 class="form-section__title">Formación</h2>
+                            <p class="form-section__desc">Tu estudio más reciente y los idiomas que hablas.</p>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label class="field__label" for="educationLevel">Nivel de estudios</label>
+                            <select class="select" id="educationLevel" name="educationLevel">
+                                <option value="">Selecciona…</option>
+                                <option value="bachillerato">Bachillerato / secundaria</option>
+                                <option value="tecnico">Técnico</option>
+                                <option value="tecnologo">Tecnólogo</option>
+                                <option value="universitario">Universitario / pregrado</option>
+                                <option value="especializacion">Especialización / posgrado</option>
+                                <option value="maestria">Maestría</option>
+                                <option value="doctorado">Doctorado</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="graduationYear">Año de graduación</label>
+                            <input class="input" type="number" id="graduationYear" name="graduationYear" min="1950" max="2100" step="1" placeholder="2024" inputmode="numeric">
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="institution">Institución educativa</label>
+                            <input class="input" type="text" id="institution" name="institution" maxlength="150" placeholder="Universidad Nacional de Colombia">
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="fieldOfStudy">Título / área de estudio</label>
+                            <input class="input" type="text" id="fieldOfStudy" name="fieldOfStudy" maxlength="150" placeholder="Ingeniería de Sistemas">
+                        </div>
+
+                        <div class="field field--full">
+                            <label class="field__label" for="languages">Idiomas</label>
+                            <input class="input" type="text" id="languages" name="languages" maxlength="255" placeholder="Español (nativo), Inglés (B2)">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-section card" id="section-links">
+                    <legend class="visually-hidden">Enlaces y habilidades</legend>
+                    <div class="form-section__head" aria-hidden="true">
+                        <span class="form-section__icon"><svg class="icon"><use href="../assets/icons.svg#i-link"/></svg></span>
+                        <div>
+                            <h2 class="form-section__title">Enlaces y habilidades</h2>
+                            <p class="form-section__desc">Tus perfiles públicos y lo que sabes hacer.</p>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label class="field__label" for="linkedin">LinkedIn</label>
+                            <input class="input" type="text" id="linkedin" name="linkedin" maxlength="255" placeholder="linkedin.com/in/tu-usuario">
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="github">GitHub</label>
+                            <input class="input" type="text" id="github" name="github" maxlength="255" placeholder="github.com/tu-usuario">
+                        </div>
+
+                        <div class="field field--full">
+                            <label class="field__label" for="portfolio">Portafolio / sitio web</label>
+                            <input class="input" type="text" id="portfolio" name="portfolio" maxlength="255" autocomplete="url" placeholder="https://tu-portafolio.dev">
+                        </div>
+
+                        <div class="field field--full">
+                            <label class="field__label" for="skills">Habilidades</label>
+                            <input class="input" type="text" id="skills" name="skills" placeholder="JavaScript, SQL, React (sepáralas con comas)" aria-describedby="skills-hint">
+                            <span class="field__hint" id="skills-hint">Sepáralas con comas — se guardan como una lista.</span>
+                            <ul class="chip-list skills-preview" id="skillsPreview" aria-label="Habilidades que se guardarán"></ul>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="save-bar">
+                    <p class="save-bar__text" id="saveBarText">Los cambios se guardan en el perfil activo.</p>
+                    <button type="submit" class="btn btn--primary btn--lg" id="saveProfileButton">
+                        Guardar perfil
+                    </button>
                 </div>
-            </fieldset>
+            </form>
+        </main>
+    </div>
 
-            <fieldset class="form-section">
-                <legend class="form-section__title">Perfil profesional y experiencia</legend>
-                <div class="form-grid">
-                    <div class="field field--full">
-                        <label for="headline">Titular profesional</label>
-                        <input type="text" id="headline" name="headline" maxlength="150" placeholder="Desarrolladora Full Stack | Node.js · React">
-                    </div>
-
-                    <div class="field field--full">
-                        <label for="summary">Resumen / acerca de mí</label>
-                        <textarea id="summary" name="summary" rows="4" maxlength="2000" placeholder="Cuéntale a los reclutadores quién eres y qué te interesa."></textarea>
-                    </div>
-
-                    <div class="field">
-                        <label for="currentTitle">Cargo actual o más reciente</label>
-                        <input type="text" id="currentTitle" name="currentTitle" maxlength="150" autocomplete="organization-title" placeholder="Desarrolladora Backend">
-                    </div>
-
-                    <div class="field">
-                        <label for="currentCompany">Empresa actual o más reciente</label>
-                        <input type="text" id="currentCompany" name="currentCompany" maxlength="150" autocomplete="organization" placeholder="Acme S.A.S.">
-                    </div>
-
-                    <div class="field">
-                        <label for="yearsExperience">Años de experiencia</label>
-                        <input type="number" id="yearsExperience" name="yearsExperience" min="0" max="70" step="1" placeholder="3">
-                    </div>
-
-                    <div class="field">
-                        <label for="salaryExpectation">Aspiración salarial mensual</label>
-                        <input type="number" id="salaryExpectation" name="salaryExpectation" min="0" step="1" placeholder="4500000">
-                        <span class="field__hint">Solo números, en tu moneda local.</span>
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset class="form-section">
-                <legend class="form-section__title">Educación</legend>
-                <div class="form-grid">
-                    <div class="field">
-                        <label for="educationLevel">Nivel de estudios</label>
-                        <select id="educationLevel" name="educationLevel">
-                            <option value="">Selecciona…</option>
-                            <option value="bachillerato">Bachillerato / secundaria</option>
-                            <option value="tecnico">Técnico</option>
-                            <option value="tecnologo">Tecnólogo</option>
-                            <option value="universitario">Universitario / pregrado</option>
-                            <option value="especializacion">Especialización / posgrado</option>
-                            <option value="maestria">Maestría</option>
-                            <option value="doctorado">Doctorado</option>
-                        </select>
-                    </div>
-
-                    <div class="field">
-                        <label for="graduationYear">Año de graduación</label>
-                        <input type="number" id="graduationYear" name="graduationYear" min="1950" max="2100" step="1" placeholder="2024">
-                    </div>
-
-                    <div class="field">
-                        <label for="institution">Institución educativa</label>
-                        <input type="text" id="institution" name="institution" maxlength="150" placeholder="Universidad Nacional de Colombia">
-                    </div>
-
-                    <div class="field">
-                        <label for="fieldOfStudy">Título / área de estudio</label>
-                        <input type="text" id="fieldOfStudy" name="fieldOfStudy" maxlength="150" placeholder="Ingeniería de Sistemas">
-                    </div>
-
-                    <div class="field field--full">
-                        <label for="languages">Idiomas</label>
-                        <input type="text" id="languages" name="languages" maxlength="255" placeholder="Español (nativo), Inglés (B2)">
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset class="form-section">
-                <legend class="form-section__title">Enlaces y habilidades</legend>
-                <div class="form-grid">
-                    <div class="field">
-                        <label for="linkedin">LinkedIn</label>
-                        <input type="text" id="linkedin" name="linkedin" maxlength="255" placeholder="linkedin.com/in/tu-usuario">
-                    </div>
-
-                    <div class="field">
-                        <label for="github">GitHub</label>
-                        <input type="text" id="github" name="github" maxlength="255" placeholder="github.com/tu-usuario">
-                    </div>
-
-                    <div class="field field--full">
-                        <label for="portfolio">Portafolio / sitio web</label>
-                        <input type="text" id="portfolio" name="portfolio" maxlength="255" autocomplete="url" placeholder="https://tu-portafolio.dev">
-                    </div>
-
-                    <div class="field field--full">
-                        <label for="skills">Habilidades</label>
-                        <input type="text" id="skills" name="skills" placeholder="JavaScript, SQL, React (sepáralas con comas)">
-                        <span class="field__hint">Sepáralas con comas — se guardan como una lista.</span>
-                    </div>
-                </div>
-            </fieldset>
-
-            <button type="submit" class="btn btn--primary" id="saveProfileButton">
-                Guardar perfil
-            </button>
-
-        </form>
-    </main>
-
+    <script src="../js/ui.js"></script>
+    <script src="../js/profile-ui.js"></script>
     <script src="../js/profile.js"></script>
 </body>
 </html>

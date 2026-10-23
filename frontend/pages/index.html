@@ -3,23 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FillPro</title>
+    <title>FillPro — Tu perfil listo en un clic</title>
+    <meta name="description" content="FillPro autocompleta formularios de postulación laboral con los datos de tu perfil. Revisas cada campo antes de confirmar.">
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/Icono-FillPro.png">
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/tokens.css">
+    <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Parte Roja -->
-        <div class="left-side">
-            <img src="../assets/FillPro_Logo_Alt-sinFondo.png" alt="Logo" class="logo">
-            <h1 class="title">Tu perfil listo en un clic!</h1>
-            <button class="login-button" id="loginButton">Iniciar sesión</button>
+    <a class="skip-link" href="#main">Ir al contenido</a>
+
+    <header class="topbar landing-topbar">
+        <div class="container topbar__inner">
+            <a class="topbar__brand" href="index.html">
+                <img src="../assets/fillpro-logo.png" alt="FillPro" class="topbar__logo" width="1020" height="308">
+            </a>
+            <nav class="topbar__nav" aria-label="Principal">
+                <a class="nav-link landing-nav__link" href="#como-funciona">Cómo funciona</a>
+                <a class="nav-link landing-nav__link" href="#portales">Portales</a>
+                <a class="btn btn--secondary btn--sm" href="signup.html">Crear cuenta</a>
+            </nav>
         </div>
-        <!-- Parte Blanca -->
-        <div class="right-side">
-            <img src="../assets/Image_right_side.png" alt="Grupo de estudiantes" class="main-image">
+    </header>
+
+    <main id="main">
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="container hero__inner">
+                <div class="hero__copy">
+                    <h1 id="hero-title" class="hero__title">Tu perfil listo en un clic</h1>
+                    <p class="hero__lead">
+                        FillPro es una extensión de Chrome que completa tus formularios de postulación
+                        con los datos de tu perfil. Tú revisas cada campo y confirmas antes de enviar.
+                    </p>
+                    <div class="hero__actions">
+                        <button class="btn btn--primary btn--lg login-button" id="loginButton">Iniciar sesión</button>
+                        <a class="btn btn--ghost btn--lg" href="signup.html">
+                            Crear cuenta gratis
+                            <svg class="icon icon--sm icon--forward" aria-hidden="true"><use href="../assets/icons.svg#i-arrow-right"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <figure class="hero__visual">
+                    <img src="../assets/Image_right_side.png" alt="Una persona frente a su portátil mientras FillPro marca como listos los campos de un formulario" class="main-image" width="1024" height="1024">
+                    <figcaption class="hero__card" aria-hidden="true">
+                        <span class="hero__card-row"><span class="badge badge--success"><svg class="icon"><use href="../assets/icons.svg#i-check"/></svg>Listo</span> Nombre</span>
+                        <span class="hero__card-row"><span class="badge badge--success"><svg class="icon"><use href="../assets/icons.svg#i-check"/></svg>Listo</span> Correo</span>
+                        <span class="hero__card-row"><span class="badge badge--warning">Revisar</span> Teléfono</span>
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section class="steps" id="como-funciona" aria-labelledby="steps-title">
+            <div class="container">
+                <h2 id="steps-title" class="steps__title">Así funciona</h2>
+                <ol class="steps__list">
+                    <li class="step">
+                        <span class="step__icon" aria-hidden="true"><svg class="icon"><use href="../assets/icons.svg#i-user"/></svg></span>
+                        <h3 class="step__title">Llena tu perfil una vez</h3>
+                        <p class="step__text">Datos personales, contacto, experiencia, formación y enlaces. Puedes crear varios perfiles para distintos cargos.</p>
+                    </li>
+                    <li class="step">
+                        <span class="step__icon" aria-hidden="true"><svg class="icon"><use href="../assets/icons.svg#i-form-check"/></svg></span>
+                        <h3 class="step__title">Abre una postulación</h3>
+                        <p class="step__text">En el formulario, haz clic en FillPro. Verás cada campo detectado con el valor que propone y su estado.</p>
+                    </li>
+                    <li class="step">
+                        <span class="step__icon" aria-hidden="true"><svg class="icon"><use href="../assets/icons.svg#i-check-circle"/></svg></span>
+                        <h3 class="step__title">Revisa y confirma</h3>
+                        <p class="step__text">Corrige lo que quieras y confirma. FillPro completa el formulario, pero nunca lo envía por ti.</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="portals" id="portales" aria-labelledby="portals-title">
+            <div class="container portals__inner">
+                <div class="portals__copy">
+                    <h2 id="portals-title" class="portals__title">Funciona donde ya te postulas</h2>
+                    <p class="portals__text">Reconoce los campos más comunes de los portales de empleo y de los sistemas que usan las empresas en sus páginas de "Trabaja con nosotros".</p>
+                </div>
+                <ul class="portals__list" aria-label="Portales compatibles">
+                    <li>LinkedIn</li>
+                    <li>Computrabajo</li>
+                    <li>elempleo</li>
+                    <li>Indeed</li>
+                    <li>Greenhouse</li>
+                    <li>Lever</li>
+                    <li>Workday</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="cta" aria-labelledby="cta-title">
+            <div class="container cta__inner">
+                <div>
+                    <h2 id="cta-title" class="cta__title">Empieza con tu primer perfil</h2>
+                    <p class="cta__text">Crear la cuenta toma menos de un minuto.</p>
+                </div>
+                <div class="cta__actions">
+                    <a class="btn btn--on-primary btn--lg" href="signup.html">Crear cuenta</a>
+                    <a class="cta__link" href="login.html">Ya tengo cuenta</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer__inner">
+            <img src="../assets/fillpro-mark.png" alt="" class="footer__mark" width="298" height="308">
+            <p>FillPro · Proyecto de Ingeniería de Software</p>
         </div>
-    </div>
+    </footer>
 
     <script src="../js/app.js"></script>
 </body>

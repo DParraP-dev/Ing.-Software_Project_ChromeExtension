@@ -4,320 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FillPro</title>
-    <style>
-        :root {
-            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            color: #182033;
-            background: #f5f6fa;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            width: 400px;
-            max-height: 600px;
-            min-height: 300px;
-            margin: 0;
-            padding: 16px;
-        }
-
-        header {
-            margin-bottom: 12px;
-        }
-
-        h1 {
-            margin: 0;
-            color: #5956e9;
-            font-size: 26px;
-        }
-
-        .subtitle {
-            margin: 5px 0 0;
-            color: #687288;
-            font-size: 13px;
-        }
-
-        .panel {
-            padding: 14px;
-            background: #ffffff;
-            border: 1px solid #e0e4ed;
-            border-radius: 14px;
-            box-shadow: 0 10px 28px rgba(35, 45, 75, 0.08);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        form,
-        .autofill-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 13px;
-        }
-
-        label {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            font-size: 13px;
-            font-weight: 650;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px 11px;
-            border: 1px solid #bac3d2;
-            border-radius: 8px;
-            font: inherit;
-        }
-
-        input:focus {
-            border-color: #5956e9;
-            outline: 3px solid rgba(89, 86, 233, 0.14);
-        }
-
-        .profile-select {
-            width: 100%;
-            padding: 10px 11px;
-            border: 1px solid #bac3d2;
-            border-radius: 8px;
-            font: inherit;
-            background: #ffffff;
-        }
-
-        .profile-select:focus {
-            border-color: #5956e9;
-            outline: 3px solid rgba(89, 86, 233, 0.14);
-        }
-
-        input:disabled,
-        select:disabled,
-        textarea:disabled {
-            color: #687288;
-            background: #f3f4f8;
-        }
-
-        button {
-            padding: 11px 14px;
-            border: 0;
-            border-radius: 8px;
-            font: inherit;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        button:disabled {
-            cursor: wait;
-            opacity: 0.65;
-        }
-
-        .primary-button {
-            color: #ffffff;
-            background: #5956e9;
-        }
-
-        .secondary-button {
-            color: #505a70;
-            background: #e9ecf3;
-        }
-
-        .clear-button {
-            color: #b42318;
-            background: #ffffff;
-            border: 1px solid #e8b4af;
-        }
-
-        .autofill-copy {
-            margin: 0;
-            color: #505a70;
-            font-size: 14px;
-            line-height: 1.45;
-        }
-
-        h2 {
-            margin: 0 0 6px;
-            font-size: 18px;
-        }
-
-        .preview-description,
-        #previewTarget,
-        #previewSummary,
-        .current-value {
-            margin: 6px 0;
-            color: #505a70;
-            font-size: 12px;
-            line-height: 1.45;
-            overflow-wrap: anywhere;
-        }
-
-        #previewTarget {
-            font-weight: 650;
-        }
-
-        #previewFields {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            min-width: 0;
-            max-height: 190px;
-            overflow-y: auto;
-            margin: 0;
-            padding: 2px;
-            border: 0;
-        }
-
-        .preview-field {
-            padding: 11px;
-            border: 1px solid #dfe3ee;
-            border-radius: 9px;
-        }
-
-        .preview-field .field-heading {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .field-heading label {
-            overflow-wrap: anywhere;
-        }
-
-        input[type="checkbox"] {
-            flex: 0 0 auto;
-            width: 16px;
-            height: 16px;
-            margin: 0;
-            accent-color: #5956e9;
-        }
-
-        .preview-field select,
-        .preview-field textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #bac3d2;
-            border-radius: 8px;
-            font: inherit;
-        }
-
-        .preview-field textarea {
-            min-height: 70px;
-            resize: vertical;
-        }
-
-        .preview-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        #previewSummary {
-            margin: 0;
-        }
-
-        button:focus-visible,
-        select:focus-visible,
-        textarea:focus-visible {
-            outline: 3px solid #b4b2ff;
-            outline-offset: 2px;
-        }
-
-        #status {
-            min-height: 20px;
-            margin: 14px 2px 0;
-            color: #505a70;
-            font-size: 13px;
-            line-height: 1.4;
-        }
-
-        #status[data-type="success"] {
-            color: #137548;
-        }
-
-        #status:empty {
-            display: none;
-        }
-
-        #status[data-type="error"] {
-            color: #b42318;
-        }
-    </style>
+    <link rel="stylesheet" href="fonts.css">
+    <link rel="stylesheet" href="tokens.css">
+    <link rel="stylesheet" href="components.css">
+    <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-    <header>
-        <h1>FillPro</h1>
-        <p class="subtitle">Tu perfil listo en un clic</p>
+    <div class="busy-bar" aria-hidden="true"></div>
+
+    <header class="brand">
+        <img src="fillpro-mark.png" alt="" class="brand__mark" width="24" height="25">
+        <div class="brand__text">
+            <h1 class="brand__name"><span class="brand__fill">Fill</span><span class="brand__pro">Pro</span></h1>
+            <p class="subtitle">Tu perfil listo en un clic</p>
+        </div>
     </header>
 
-    <section id="loginPanel" class="panel hidden">
-        <form id="loginForm">
-            <label for="email">
-                Correo
-                <input id="email" name="email" type="email" autocomplete="username" required>
-            </label>
+    <section id="loginPanel" class="panel hidden" aria-labelledby="loginTitle">
+        <div class="panel__intro">
+            <h2 id="loginTitle" class="panel__title">Inicia sesión</h2>
+            <p class="panel__text">Usa la misma cuenta de la web de FillPro.</p>
+        </div>
+        <form id="loginForm" class="stack">
+            <div class="field">
+                <label class="field__label" for="email">Correo</label>
+                <input class="input" id="email" name="email" type="email" autocomplete="username" required>
+            </div>
 
-            <label for="password">
-                Contraseña
-                <input id="password" name="password" type="password" autocomplete="current-password" required>
-            </label>
+            <div class="field">
+                <label class="field__label" for="password">Contraseña</label>
+                <input class="input" id="password" name="password" type="password" autocomplete="current-password" required>
+            </div>
 
-            <button id="loginButton" class="primary-button" type="submit">
+            <button id="loginButton" class="btn btn--primary" type="submit">
                 Iniciar sesión
             </button>
         </form>
     </section>
 
-    <section id="autofillPanel" class="panel hidden">
+    <section id="autofillPanel" class="panel hidden" aria-label="Autocompletar">
         <div class="autofill-panel">
-            <label for="profileSelect">
-                Perfil activo
-                <select id="profileSelect" class="profile-select"></select>
-            </label>
+            <div class="field profile-field">
+                <label class="field__label" for="profileSelect">Perfil activo</label>
+                <select id="profileSelect" class="select profile-select"></select>
+            </div>
 
-            <p class="autofill-copy">
-                Revisa y corrige los datos de tu perfil antes de completar el formulario de esta pestaña.
-                Compatible con LinkedIn, Computrabajo, elempleo, Indeed y formularios de empleo comunes.
-            </p>
-            <button id="autofillButton" class="primary-button" type="button">
-                Previsualizar autocompletado
-            </button>
-            <button id="clearAutofillButton" class="clear-button" type="button" aria-describedby="clearHint">
-                Borrar autocompletado
-            </button>
-            <button id="logoutButton" class="secondary-button" type="button">
+            <div class="hero">
+                <p class="autofill-copy">
+                    Revisa y corrige los datos de tu perfil antes de completar el formulario de esta pestaña.
+                    Compatible con LinkedIn, Computrabajo, elempleo, Indeed y formularios de empleo comunes.
+                </p>
+                <button id="autofillButton" class="btn btn--primary btn--hero" type="button">
+                    <svg class="icon" aria-hidden="true"><use href="icons.svg#i-form-check"/></svg>
+                    Previsualizar autocompletado
+                </button>
+            </div>
+
+            <div class="secondary-actions">
+                <button id="clearAutofillButton" class="btn btn--danger" type="button" aria-describedby="clearHint">
+                    <svg class="icon" aria-hidden="true"><use href="icons.svg#i-eraser"/></svg>
+                    Borrar autocompletado
+                </button>
+                <p id="clearHint" class="preview-description">Borrar solo limpia lo escrito por FillPro en esta página. Conserva tus cambios posteriores y no modifica tu perfil.</p>
+            </div>
+
+            <button id="logoutButton" class="btn btn--ghost btn--sm logout" type="button">
+                <svg class="icon" aria-hidden="true"><use href="icons.svg#i-log-out"/></svg>
                 Cerrar sesión
             </button>
-            <p id="clearHint" class="preview-description">Borrar solo limpia lo escrito por FillPro en esta página. Conserva tus cambios posteriores y no modifica tu perfil.</p>
         </div>
     </section>
 
-    <section id="previewPanel" class="panel hidden" aria-labelledby="previewTitle">
-        <h2 id="previewTitle" tabindex="-1">Revisa antes de completar</h2>
-        <p id="previewTarget"></p>
+    <section id="previewPanel" class="panel preview hidden" aria-labelledby="previewTitle">
+        <div class="preview__header">
+            <h2 id="previewTitle" class="panel__title" tabindex="-1">Revisa antes de completar</h2>
+            <p id="previewTarget"></p>
+        </div>
         <p class="preview-description">
             Corrige los valores o desmarca los campos que quieras omitir.
             Los valores vacíos se omiten.
             Los campos que ya tienen datos aparecen desmarcados; márcalos solo si quieres reemplazarlos.
         </p>
-        <form id="previewForm">
+        <form id="previewForm" class="preview__form">
             <fieldset id="previewFields" aria-label="Campos para autocompletar"></fieldset>
             <div class="preview-actions">
                 <p id="previewSummary" aria-live="polite"></p>
-                <button id="confirmButton" class="primary-button" type="submit" disabled>
+                <button id="confirmButton" class="btn btn--primary" type="submit" disabled>
+                    <svg class="icon" aria-hidden="true"><use href="icons.svg#i-check"/></svg>
                     Confirmar y autocompletar
                 </button>
-                <button id="cancelPreviewButton" class="secondary-button" type="button">
+                <button id="cancelPreviewButton" class="btn btn--secondary" type="button">
                     Cancelar
                 </button>
             </div>
         </form>
-        <p class="preview-description">Tu perfil guardado no cambia. Al cerrar se descartan las correcciones pendientes. El formulario no se envía.</p>
+        <p class="preview-description preview__note">Tu perfil guardado no cambia. Al cerrar se descartan las correcciones pendientes. El formulario no se envía.</p>
     </section>
 
-    <p id="status" role="status" aria-live="polite"></p>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
 
     <script src="popup.js"></script>
 </body>

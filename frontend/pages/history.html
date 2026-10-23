@@ -5,37 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial — FillPro</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/Icono-FillPro.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/tokens.css">
+    <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/historystyles.css">
 </head>
 <body>
+    <a class="skip-link" href="#main">Ir al contenido</a>
 
     <header class="topbar">
-        <a href="main.html" class="topbar__back">← Volver</a>
-        <img src="../assets/FillPro_Logo_Alt-sinFondo.png" alt="FillPro" class="topbar__logo">
+        <div class="container container--narrow topbar__inner">
+            <a href="main.html" class="back-link topbar__back">
+                <svg class="icon icon--sm" aria-hidden="true"><use href="../assets/icons.svg#i-arrow-left"/></svg>
+                Volver
+            </a>
+            <a class="topbar__brand" href="main.html">
+                <img src="../assets/fillpro-logo.png" alt="FillPro" class="topbar__logo" width="1020" height="308">
+            </a>
+        </div>
     </header>
 
-    <main class="page">
-        <h1 class="page__title">Historial de uso</h1>
-        <p class="page__subtitle">
-            Aquí puedes ver en qué sitios usaste FillPro para autocompletar
-            formularios y en qué fecha lo hiciste.
-        </p>
+    <main id="main" class="container container--narrow page">
+        <header class="page-header">
+            <h1 class="page-header__title page__title">Historial de uso</h1>
+            <p class="page-header__lead page__subtitle">
+                Aquí puedes ver en qué sitios usaste FillPro para autocompletar
+                formularios y en qué fecha lo hiciste.
+            </p>
+        </header>
 
-        <div class="history-toolbar">
-            <p class="history-toolbar__count" id="historyCount"></p>
-            <button type="button" class="btn btn--danger" id="clearHistoryButton" disabled>
-                Borrar historial
-            </button>
-        </div>
+        <section class="card history" aria-label="Autocompletados">
+            <div class="history-toolbar">
+                <p class="history-toolbar__count tabular" id="historyCount"></p>
+                <button type="button" class="btn btn--danger btn--sm" id="clearHistoryButton" disabled>
+                    <svg class="icon icon--sm" aria-hidden="true"><use href="../assets/icons.svg#i-trash"/></svg>
+                    Borrar historial
+                </button>
+            </div>
 
-        <p class="history-status" id="historyStatus" role="status" aria-live="polite">
-            Cargando historial...
-        </p>
+            <p class="history-status" id="historyStatus" role="status" aria-live="polite">
+                Cargando historial...
+            </p>
 
-        <ol class="history-list" id="historyList"></ol>
+            <ol class="history-list" id="historyList"></ol>
+        </section>
     </main>
 
     <script src="../js/history.js"></script>

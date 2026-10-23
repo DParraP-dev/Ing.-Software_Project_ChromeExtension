@@ -1,0 +1,253 @@
+/* FillPro — páginas de acceso (login, signup, reset-password). */
+
+.auth {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    min-height: 100vh;
+}
+
+/* ── Panel de marca ── */
+
+.auth__brand {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: var(--space-10);
+    padding: var(--space-10) var(--space-12);
+    overflow: hidden;
+    background: var(--primary-700);
+    color: var(--text-on-primary);
+}
+
+.auth__logo {
+    display: inline-flex;
+    width: fit-content;
+    border-radius: var(--radius-sm);
+}
+
+.auth__logo img {
+    width: 7.5rem;
+    height: auto;
+}
+
+/* El texto y la ilustración forman un solo bloque centrado en el panel */
+.auth__story {
+    display: grid;
+    align-content: center;
+    gap: var(--space-10);
+}
+
+.auth__logo:focus-visible {
+    outline-color: var(--surface-0);
+}
+
+.auth__pitch {
+    display: grid;
+    gap: var(--space-4);
+    max-width: 26rem;
+}
+
+.auth__headline {
+    color: var(--text-on-primary);
+    font-size: var(--text-4xl);
+    letter-spacing: var(--tracking-display);
+}
+
+.auth__lead {
+    color: var(--text-on-primary-muted);
+    font-size: var(--text-md);
+    line-height: var(--leading-relaxed);
+}
+
+.auth__points {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-2) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.auth__points li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--text-on-primary);
+    font-size: var(--text-base);
+    font-weight: var(--weight-medium);
+}
+
+.auth__points .icon {
+    color: var(--accent-300);
+    stroke-width: 2.25;
+}
+
+/* La ilustración de la marca sobre una placa clara: así se lee sobre el índigo */
+.auth__art {
+    position: relative;
+    width: min(100%, 20rem);
+    aspect-ratio: 1;
+    border-radius: var(--radius-lg);
+    background: var(--surface-0);
+    overflow: hidden;
+}
+
+.auth__art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ── Formulario ── */
+
+.auth__main {
+    display: grid;
+    place-items: center;
+    padding: var(--space-12) var(--space-6);
+}
+
+.auth__panel {
+    display: grid;
+    gap: var(--space-8);
+    width: min(100%, 25rem);
+}
+
+.auth__mobile-logo {
+    display: none;
+}
+
+.auth__header {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.auth__title {
+    font-size: var(--text-3xl);
+    letter-spacing: var(--tracking-display);
+}
+
+.auth__subtitle {
+    color: var(--text-secondary);
+    font-size: var(--text-md);
+}
+
+.auth__form {
+    display: grid;
+    gap: var(--space-5);
+}
+
+.auth__form .btn {
+    margin-top: var(--space-2);
+}
+
+.auth__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.auth__row .field__label {
+    margin: 0;
+}
+
+.auth__small-link {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    text-decoration: none;
+}
+
+.auth__small-link:hover {
+    text-decoration: underline;
+}
+
+.auth__footer {
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: var(--text-base);
+    text-align: center;
+}
+
+.auth__footer a {
+    font-weight: var(--weight-semibold);
+}
+
+/* Requisitos de contraseña que se marcan mientras se escribe */
+.requirements {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.requirements li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text-tertiary);
+    font-size: var(--text-sm);
+    transition: color var(--duration-fast) var(--ease-out);
+}
+
+.requirements .icon {
+    width: 1rem;
+    height: 1rem;
+    stroke-width: 2.25;
+}
+
+.requirements li[data-met="true"] {
+    color: var(--success-text);
+}
+
+.requirements li .icon-met,
+.requirements li[data-met="true"] .icon-pending {
+    display: none;
+}
+
+.requirements li[data-met="true"] .icon-met {
+    display: block;
+}
+
+@media (max-width: 960px) {
+    .auth__brand {
+        padding: var(--space-8);
+    }
+
+    .auth__headline {
+        font-size: var(--text-3xl);
+    }
+}
+
+@media (max-width: 800px) {
+    .auth {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .auth__brand {
+        display: none;
+    }
+
+    .auth__main {
+        place-items: start center;
+        padding: var(--space-8) var(--space-4) var(--space-12);
+    }
+
+    .auth__mobile-logo {
+        display: inline-flex;
+        width: fit-content;
+    }
+
+    .auth__mobile-logo img {
+        width: 8rem;
+        height: auto;
+    }
+
+    .auth__title {
+        font-size: var(--text-2xl);
+    }
+}
+
+.field--invalid .requirements {
+    display: none;
+}

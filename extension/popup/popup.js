@@ -46,8 +46,26 @@ function updateSelection() {
     confirmButton.disabled = busy || count === 0;
 }
 
+// Estado visual de un campo de la vista previa: listo (se escribirá),
+// revisar (la página ya tenía un valor o el valor está vacío) u omitido.
+// Solo presentación: no cambia qué campos se envían.
+function updateFieldState({ field, checkbox, editor, container, badge }) {
+    const hasValue = editor.value.trim() !== "";
+    // field.selected === false: la página ya tenía un dato; el usuario decide si reemplazarlo.
+    const state = field.selected === false ? "review"
+        : !checkbox.checked ? "skip"
+            : !hasValue ? "review"
+                : "ready";
+    const label = state === "ready" ? "Listo" : state === "review" ? "Revisar" : "Omitido";
+    container.dataset.state = state;
+    badge.className = "badge " + (state === "ready" ? "badge--success"
+        : state === "review" ? "badge--warning" : "badge--muted");
+    badge.textContent = label;
+}
+
 function setBusy(value) {
     busy = value;
+    document.body.dataset.busy = String(value);
     for (const button of [loginButton, autofillButton, clearAutofillButton, logoutButton, cancelPreviewButton]) {
         button.disabled = value;
     }
@@ -154,7 +172,7 @@ function renderProfileOptions(profiles, activeId) {
 
     const createOption = document.createElement("option");
     createOption.value = CREATE_OPTION_VALUE;
-    createOption.textContent = "➕ Crear nuevo perfil…";
+    createOption.textContent = "+ Crear nuevo perfil…";
     profileSelect.append(createOption);
 
     if (activeId && profiles.some((p) => String(p.id) === String(activeId))) {
@@ -235,13 +253,21 @@ function renderPreview(result, tab, token) {
         current.textContent = currentText ? "Valor actual: " + currentText : "Campo actualmente vacío";
         editor.setAttribute("aria-describedby", current.id);
 
+        const badge = document.createElement("span");
+        const control = { field, checkbox, editor, container, badge };
+        updateFieldState(control);
+
         checkbox.addEventListener("change", () => {
             editor.disabled = !checkbox.checked;
+            updateFieldState(control);
             updateSelection();
         });
-        editor.addEventListener("input", updateSelection);
+        editor.addEventListener("input", () => {
+            updateFieldState(control);
+            updateSelection();
+        });
         editor.addEventListener("change", updateSelection);
-        heading.append(checkbox, label);
+        heading.append(checkbox, label, badge);
         container.append(heading, editor, current);
         previewFields.append(container);
         preview.controls.push({ field, checkbox, editor });
