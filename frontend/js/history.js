@@ -5,7 +5,7 @@ if (!token) {
     window.location.href = 'login.html';
 }
 
-const API_URL = 'http://localhost:3000/logs';
+const API_URL = `${window.FILLPRO_API_BASE_URL}/logs`;
 
 // Nombres legibles de los campos que guarda la extensión
 // (claves de extension/src/core/fieldCatalog.js)

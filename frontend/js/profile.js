@@ -1,5 +1,5 @@
 const token = localStorage.getItem('token');
-const API_BASE = 'http://localhost:3000/profile';
+const API_BASE = `${window.FILLPRO_API_BASE_URL}/profile`;
 
 // Clave en localStorage para recordar el perfil activo (perfil activo = cliente).
 const ACTIVE_PROFILE_KEY = 'activeProfileId';
