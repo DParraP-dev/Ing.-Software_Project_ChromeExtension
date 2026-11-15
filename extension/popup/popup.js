@@ -1,4 +1,5 @@
-const API_BASE_URL = "http://localhost:3000";
+// URLs centralizadas en config.js (cargado antes que este script en popup.html).
+const API_BASE_URL = globalThis.FILLPRO_CONFIG.API_BASE_URL;
 
 const loginPanel = document.getElementById("loginPanel");
 const autofillPanel = document.getElementById("autofillPanel");
@@ -20,8 +21,8 @@ const profileSelect = document.getElementById("profileSelect");
 const ACTIVE_PROFILE_KEY = "activeProfileId";
 // Valor especial de la opción "crear nuevo perfil" dentro del <select>.
 const CREATE_OPTION_VALUE = "__create__";
-// Página web donde el usuario crea/gestiona perfiles.
-const PROFILE_PAGE_URL = "http://localhost:5500/pages/profile.html";
+// Página web donde el usuario crea/gestiona perfiles (ver config.js).
+const PROFILE_PAGE_URL = globalThis.FILLPRO_CONFIG.PROFILE_PAGE_URL;
 
 let preview = null;
 let busy = false;

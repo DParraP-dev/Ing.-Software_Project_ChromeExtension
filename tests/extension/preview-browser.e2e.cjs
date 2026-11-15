@@ -21,6 +21,7 @@ before(async () => {
         const routes = {
             "/test-form.html": ["test-form.html", "text/html"],
             "/popup/popup.html": ["popup/popup.html", "text/html"],
+            "/popup/config.js": ["popup/config.js", "text/javascript"],
             "/popup/popup.js": ["popup/popup.js", "text/javascript"]
         };
         const resource = routes[new URL(req.url, "http://localhost").pathname];
