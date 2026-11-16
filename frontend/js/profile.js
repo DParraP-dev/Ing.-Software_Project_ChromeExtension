@@ -84,7 +84,7 @@ function renderProfileOptions(profiles) {
     // Acceso rápido: última opción del desplegable crea un perfil nuevo.
     const createOption = document.createElement('option');
     createOption.value = CREATE_OPTION_VALUE;
-    createOption.textContent = '➕ Crear nuevo perfil…';
+    createOption.textContent = '+ Crear nuevo perfil…';
     profileSelect.appendChild(createOption);
 
     if (activeProfileId && profiles.some((p) => String(p.id) === activeProfileId)) {
