@@ -3,24 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FillPro</title>
+    <title>FillPro — Tu perfil listo en un clic</title>
+    <meta name="description" content="FillPro autocompleta formularios de postulación laboral con los datos de tu perfil. Revisas cada campo antes de confirmar.">
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/Icono-FillPro.png">
+    <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/tokens.css">
+    <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-    <div class="container">
-        <!-- Parte Roja -->
-        <div class="left-side">
-            <img src="../assets/FillPro_Logo_Alt-sinFondo.png" alt="Logo" class="logo">
-            <h1 class="title">Tu perfil listo en un clic!</h1>
-            <button class="login-button" id="loginButton">Iniciar sesión</button>
-        </div>
-        <!-- Parte Blanca -->
-        <div class="right-side">
-            <img src="../assets/Image_right_side.png" alt="Grupo de estudiantes" class="main-image">
-        </div>
-    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon-sprite" aria-hidden="true" focusable="false">
+        <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m11 6-6 6 6 6"/></symbol>
+        <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+        <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.2 2.8 2.8L16.2 9.5"/></symbol>
+        <symbol id="i-alert-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5"/><path d="M12 16.5h.01"/></symbol>
+        <symbol id="i-alert-triangle" viewBox="0 0 24 24"><path d="M10.3 3.9 2.4 17.6A2 2 0 0 0 4.1 20.6h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4.5"/><path d="M12 17h.01"/></symbol>
+        <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.5h.01"/></symbol>
+        <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+        <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5 12 5s9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z"/><circle cx="12" cy="12" r="3"/></symbol>
+        <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M10.6 5.1A10 10 0 0 1 12 5c6 0 9.5 7 9.5 7a17 17 0 0 1-2.9 3.9"/><path d="M6.6 6.6A16.7 16.7 0 0 0 2.5 12S6 19 12 19a9.6 9.6 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="m3 3 18 18"/></symbol>
+        <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c0-4 3.4-6.5 7.5-6.5s7.5 2.5 7.5 6.5"/></symbol>
+        <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7.5 8 5.5 8-5.5"/></symbol>
+        <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.5h-1A2 2 0 0 0 3.6 5.7 17 17 0 0 0 18.3 20.4a2 2 0 0 0 2.2-2v-1a1.5 1.5 0 0 0-1.1-1.5l-3-.9a1.5 1.5 0 0 0-1.6.5l-.8 1a12 12 0 0 1-5.5-5.5l1-.8a1.5 1.5 0 0 0 .5-1.6l-.9-3A1.5 1.5 0 0 0 6.6 3.5Z"/></symbol>
+        <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></symbol>
+        <symbol id="i-history" viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.5-6"/><path d="M3.5 4.5V8H7"/><path d="M12 8v4.2l2.8 1.8"/></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.6 3.7 5.6 3.7 9s-1.2 6.4-3.7 9c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3Z"/></symbol>
+        <symbol id="i-log-out" viewBox="0 0 24 24"><path d="M14 4.5h3.5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H14"/><path d="M10 16.5 5.5 12 10 7.5"/><path d="M5.5 12H15"/></symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></symbol>
+        <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M15.5 5.5 18.5 8.5"/><path d="M4.5 19.5 5.3 15.6 16 4.9a2.1 2.1 0 0 1 3 3L8.4 18.7Z"/></symbol>
+        <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15"/><path d="M9.5 7V5a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 14.5 5v2"/><path d="M6.5 7l.8 11.6A2 2 0 0 0 9.3 20.5h5.4a2 2 0 0 0 2-1.9L17.5 7"/><path d="M10 11v5.5"/><path d="M14 11v5.5"/></symbol>
+        <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3.5H7.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8Z"/><path d="M14 3.5V8h4.5"/><path d="M9 13h6"/><path d="M9 16.5h4"/></symbol>
+        <symbol id="i-form-check" viewBox="0 0 24 24"><path d="M14 3.5H7.5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V8Z"/><path d="M14 3.5V8h4.5"/><path d="m9 14 2 2 4-4.5"/></symbol>
+        <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="12.5" rx="2.5"/><path d="M8.5 7V5.5a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2V7"/><path d="M3 12.5h18"/></symbol>
+        <symbol id="i-graduation" viewBox="0 0 24 24"><path d="M2.5 9 12 4.5 21.5 9 12 13.5Z"/><path d="M6.5 11v4.5c1.5 1.4 3.4 2 5.5 2s4-.6 5.5-2V11"/><path d="M21.5 9v5"/></symbol>
+        <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+        <symbol id="i-map-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+        <symbol id="i-id-card" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2"/><path d="M6 15.5c.5-1.3 1.6-2 3-2s2.5.7 3 2"/><path d="M14.5 10h3.5"/><path d="M14.5 13.5h2.5"/></symbol>
+        <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3.5 21 8l-9 4.5L3 8Z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16 9 4.5 9-4.5"/></symbol>
+        <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.5 19.5 6v6c0 4.5-3.2 7.7-7.5 9-4.3-1.3-7.5-4.5-7.5-9V6Z"/><path d="m9 12 2 2 4-4"/></symbol>
+        <symbol id="i-cursor" viewBox="0 0 24 24"><path d="m5 4 14 6.5-6 1.5-2 6Z"/></symbol>
+        <symbol id="i-eraser" viewBox="0 0 24 24"><path d="m8.5 20 10.8-10.8a2 2 0 0 0 0-2.8L16.6 3.7a2 2 0 0 0-2.8 0L3.5 14a2 2 0 0 0 0 2.8L6.7 20Z"/><path d="M20.5 20h-12"/><path d="m9 8.5 6.5 6.5"/></symbol>
+        <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 8.7-8.7"/><path d="m16.5 6.5 2.5 2.5"/><path d="m14.5 8.5 2 2"/></symbol>
+    </svg>
+    <a class="skip-link" href="#main">Ir al contenido</a>
 
+    <header class="topbar landing-topbar">
+        <div class="container topbar__inner">
+            <a class="topbar__brand" href="index.html">
+                <img src="../assets/fillpro-logo.png" alt="FillPro" class="topbar__logo" width="1020" height="308">
+            </a>
+            <nav class="topbar__nav" aria-label="Principal">
+                <a class="nav-link landing-nav__link" href="#como-funciona">Cómo funciona</a>
+                <a class="nav-link landing-nav__link" href="#portales">Portales</a>
+                <a class="btn btn--secondary btn--sm" href="signup.html">Crear cuenta</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="container hero__inner">
+                <div class="hero__copy">
+                    <h1 id="hero-title" class="hero__title">Tu perfil listo en un clic</h1>
+                    <p class="hero__lead">
+                        FillPro es una extensión de Chrome que completa tus formularios de postulación
+                        con los datos de tu perfil. Tú revisas cada campo y confirmas antes de enviar.
+                    </p>
+                    <div class="hero__actions">
+                        <button class="btn btn--primary btn--lg login-button" id="loginButton">Iniciar sesión</button>
+                        <a class="btn btn--ghost btn--lg" href="signup.html">
+                            Crear cuenta gratis
+                            <svg class="icon icon--sm icon--forward" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+                        </a>
+                    </div>
+                    <ul class="hero__facts" aria-label="Lo que hace FillPro">
+                        <li><svg class="icon" aria-hidden="true"><use href="#i-check-circle"/></svg>Revisas cada campo antes de completarlo</li>
+                        <li><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg>Varios perfiles para distintos cargos</li>
+                        <li><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>Nunca envía el formulario por ti</li>
+                    </ul>
+                </div>
+
+                <figure class="hero__visual">
+                    <img src="../assets/Image_right_side.png" alt="Una persona frente a su portátil mientras FillPro marca como listos los campos de un formulario" class="main-image" width="1024" height="1024">
+                    <figcaption class="hero__card" aria-hidden="true">
+                        <span class="hero__card-title">Vista previa de FillPro</span>
+                        <span class="hero__card-row" style="--i: 0">
+                            <span class="hero__card-field">Nombre</span>
+                            <span class="hero__card-state">
+                                <span class="badge badge--muted hero__card-pending">Revisando</span>
+                                <span class="badge badge--success hero__card-done"><svg class="icon"><use href="#i-check"/></svg>Listo</span>
+                            </span>
+                        </span>
+                        <span class="hero__card-row" style="--i: 1">
+                            <span class="hero__card-field">Correo</span>
+                            <span class="hero__card-state">
+                                <span class="badge badge--muted hero__card-pending">Revisando</span>
+                                <span class="badge badge--success hero__card-done"><svg class="icon"><use href="#i-check"/></svg>Listo</span>
+                            </span>
+                        </span>
+                        <span class="hero__card-row" style="--i: 2">
+                            <span class="hero__card-field">Teléfono</span>
+                            <span class="hero__card-state">
+                                <span class="badge badge--muted hero__card-pending">Revisando</span>
+                                <span class="badge badge--warning hero__card-done"><svg class="icon"><use href="#i-alert-circle"/></svg>Revisar</span>
+                            </span>
+                        </span>
+                    </figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section class="steps" id="como-funciona" aria-labelledby="steps-title">
+            <div class="container">
+                <h2 id="steps-title" class="steps__title" data-reveal>Así funciona</h2>
+                <ol class="steps__list">
+                    <li class="step lift" data-reveal>
+                        <span class="step__icon" aria-hidden="true"><svg class="icon"><use href="#i-user"/></svg></span>
+                        <h3 class="step__title">Llena tu perfil una vez</h3>
+                        <p class="step__text">Datos personales, contacto, experiencia, formación y enlaces. Puedes crear varios perfiles para distintos cargos.</p>
+                    </li>
+                    <li class="step lift" data-reveal>
+                        <span class="step__icon" aria-hidden="true"><svg class="icon"><use href="#i-form-check"/></svg></span>
+                        <h3 class="step__title">Abre una postulación</h3>
+                        <p class="step__text">En el formulario, haz clic en FillPro. Verás cada campo detectado con el valor que propone y su estado.</p>
+                    </li>
+                    <li class="step lift" data-reveal>
+                        <span class="step__icon" aria-hidden="true"><svg class="icon"><use href="#i-check-circle"/></svg></span>
+                        <h3 class="step__title">Revisa y confirma</h3>
+                        <p class="step__text">Corrige lo que quieras y confirma. FillPro completa el formulario, pero nunca lo envía por ti.</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <section class="portals" id="portales" aria-labelledby="portals-title">
+            <div class="container portals__inner">
+                <div class="portals__copy" data-reveal>
+                    <h2 id="portals-title" class="portals__title">Funciona donde ya te postulas</h2>
+                    <p class="portals__text">Reconoce los campos más comunes de los portales de empleo y de los sistemas que usan las empresas en sus páginas de "Trabaja con nosotros".</p>
+                </div>
+                <ul class="portals__list" aria-label="Portales compatibles" data-reveal>
+                    <li>LinkedIn</li>
+                    <li>Computrabajo</li>
+                    <li>elempleo</li>
+                    <li>Indeed</li>
+                    <li>Greenhouse</li>
+                    <li>Lever</li>
+                    <li>Workday</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="cta" aria-labelledby="cta-title">
+            <div class="container cta__inner" data-reveal>
+                <div>
+                    <h2 id="cta-title" class="cta__title">Empieza con tu primer perfil</h2>
+                    <p class="cta__text">Crear la cuenta toma menos de un minuto.</p>
+                </div>
+                <div class="cta__actions">
+                    <a class="btn btn--on-primary btn--lg" href="signup.html">Crear cuenta</a>
+                    <a class="cta__link" href="login.html">Ya tengo cuenta</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer__inner">
+            <div class="footer__brand">
+                <img src="../assets/fillpro-logo-white.png" alt="FillPro" class="footer__logo" width="498" height="151">
+                <p>Tu perfil listo en un clic.</p>
+            </div>
+            <nav class="footer__nav" aria-label="Pie de página">
+                <a href="#como-funciona">Cómo funciona</a>
+                <a href="#portales">Portales</a>
+                <a href="login.html">Iniciar sesión</a>
+                <a href="signup.html">Crear cuenta</a>
+            </nav>
+            <p class="footer__legal">© 2026 FillPro</p>
+        </div>
+    </footer>
+
+    <script src="../js/motion.js"></script>
     <script src="../js/app.js"></script>
 </body>
 </html>
