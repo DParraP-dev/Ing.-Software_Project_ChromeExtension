@@ -14,10 +14,10 @@
 
 .hero {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: auto minmax(0, 1fr) minmax(15rem, 19rem);
     align-items: center;
-    gap: var(--space-12);
-    padding: var(--space-10) var(--space-12);
+    gap: var(--space-10);
+    padding: var(--space-10);
 }
 
 .hero__ring {
@@ -107,6 +107,81 @@
     font-size: var(--text-sm);
 }
 
+/* Accesos rápidos a la derecha del saludo */
+.hero__shortcuts {
+    display: grid;
+    gap: var(--space-2);
+    align-self: stretch;
+    align-content: center;
+    padding-left: var(--space-10);
+    border-left: 1px solid var(--border-subtle);
+}
+
+.hero__shortcuts-title {
+    margin-bottom: var(--space-1);
+    color: var(--text-tertiary);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+}
+
+.shortcut {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    margin-inline: calc(-1 * var(--space-3));
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.shortcut:hover {
+    background: var(--surface-1);
+}
+
+.shortcut__icon {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-md);
+    background: var(--primary-50);
+    color: var(--primary-700);
+}
+
+.shortcut__text {
+    display: grid;
+    min-width: 0;
+    line-height: var(--leading-snug);
+}
+
+.shortcut__text strong {
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
+}
+
+.shortcut__text span {
+    overflow: hidden;
+    color: var(--text-tertiary);
+    font-size: var(--text-sm);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.shortcut__arrow {
+    color: var(--text-tertiary);
+    transition: transform var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) {
+    .shortcut:hover .shortcut__arrow {
+        color: var(--primary-700);
+        transform: translateX(3px);
+    }
+}
+
 /* ── Cifras ── */
 
 .stats {
@@ -162,8 +237,38 @@
 .dashboard__grid {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-    align-items: start;
+    align-items: stretch;
     gap: var(--space-6);
+}
+
+/* La tarjeta del historial ocupa toda la altura de la columna lateral */
+.activity {
+    display: flex;
+    flex-direction: column;
+}
+
+.activity__list,
+.activity__empty {
+    flex: 1 1 auto;
+}
+
+.activity__empty {
+    align-content: center;
+}
+
+.activity__footer {
+    margin-top: auto;
+    color: var(--text-tertiary);
+    font-size: var(--text-sm);
+}
+
+.activity__more {
+    font-weight: var(--weight-semibold);
+    text-decoration: none;
+}
+
+.activity__more:hover {
+    text-decoration: underline;
 }
 
 .activity__intro {
@@ -195,6 +300,7 @@
 
 .side {
     display: grid;
+    align-content: start;
     gap: var(--space-6);
 }
 
@@ -265,6 +371,30 @@
 
 /* ── Responsive ── */
 
+@media (max-width: 1100px) {
+    .hero {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .hero__shortcuts {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--space-4);
+        padding: var(--space-6) 0 0;
+        border-left: 0;
+        border-top: 1px solid var(--border-subtle);
+    }
+
+    .hero__shortcuts-title {
+        display: none;
+    }
+
+    .shortcut {
+        margin: 0;
+        background: var(--surface-1);
+    }
+}
+
 @media (max-width: 960px) {
     .dashboard__grid {
         grid-template-columns: minmax(0, 1fr);
@@ -276,6 +406,12 @@
 }
 
 @media (max-width: 720px) {
+    .activity__footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-2);
+    }
+
     .topbar__nav .nav-link {
         display: none;
     }
@@ -303,6 +439,13 @@
 
     .hero__title {
         font-size: var(--text-2xl);
+    }
+
+    .hero__shortcuts {
+        grid-template-columns: minmax(0, 1fr);
+        width: 100%;
+        gap: var(--space-2);
+        text-align: left;
     }
 
     .stats,

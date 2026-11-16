@@ -34,7 +34,9 @@
 .auth__story {
     display: grid;
     align-content: center;
+    justify-self: center;
     gap: var(--space-10);
+    width: min(100%, 26rem);
 }
 
 .auth__logo:focus-visible {
@@ -44,7 +46,6 @@
 .auth__pitch {
     display: grid;
     gap: var(--space-4);
-    max-width: 26rem;
 }
 
 .auth__headline {
@@ -84,7 +85,7 @@
 /* La ilustración de la marca sobre una placa clara: así se lee sobre el índigo */
 .auth__art {
     position: relative;
-    width: min(100%, 20rem);
+    width: 100%;
     aspect-ratio: 1;
     border-radius: var(--radius-lg);
     background: var(--surface-0);
@@ -250,4 +251,27 @@
 
 .field--invalid .requirements {
     display: none;
+}
+
+/* ── Movimiento de entrada ── */
+
+@media (prefers-reduced-motion: no-preference) {
+    .auth__story > *,
+    .auth__panel > * {
+        animation: reveal 500ms var(--ease-out) both;
+    }
+
+    .auth__story > :nth-child(2) { animation-delay: 120ms; }
+    .auth__panel > :nth-child(2) { animation-delay: 60ms; }
+    .auth__panel > :nth-child(3) { animation-delay: 120ms; }
+    .auth__panel > :nth-child(4) { animation-delay: 180ms; }
+    .auth__panel > :nth-child(5) { animation-delay: 240ms; }
+
+    .auth__art img {
+        animation: image-drift 9s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes image-drift {
+    to { transform: translateY(-6px) scale(1.015); }
 }

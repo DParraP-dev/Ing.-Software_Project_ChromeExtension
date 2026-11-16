@@ -24,6 +24,15 @@
             ? "Empieza por tus datos personales: toman menos de un minuto."
             : `Te falta un ${100 - progress}% para completarlo.`;
 
+    // Las cifras cuentan desde 0 (solo si el movimiento está permitido).
+    const count = (id, value, suffix = "") => {
+        const element = $(id);
+        if (window.FillProMotion) window.FillProMotion.countTo(element, value, suffix);
+        else if (element) element.textContent = value + suffix;
+    };
+    count("ringNumber", progress, "%");
+    count("statProfileValue", progress, "%");
+
     if (!token) return;
 
     async function get(path) {
@@ -86,7 +95,7 @@
                 const d = new Date(log.date);
                 return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
             });
-            $("statMonthValue").textContent = String(thisMonth.length);
+            count("statMonthValue", thisMonth.length);
 
             if (logs.length > 0) {
                 $("statLastValue").textContent = logs[0].website;
