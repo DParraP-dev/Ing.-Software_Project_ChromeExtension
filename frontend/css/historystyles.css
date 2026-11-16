@@ -1,203 +1,175 @@
-:root {
-    --indigo-900: #3730A3;
-    --indigo-600: #4F46E5;
-    --indigo-50:  #EEF2FF;
-    --red-700:    #B91C1C;
-    --red-50:     #FEF2F2;
-    --slate-900:  #1E293B;
-    --slate-500:  #64748B;
-    --slate-200:  #E2E8F0;
-    --slate-50:   #F8FAFC;
-    --white:      #FFFFFF;
-
-    --font-display: 'Space Grotesk', sans-serif;
-    --font-body: 'Inter', sans-serif;
-    --radius-md: 10px;
-    --radius-lg: 18px;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    background: var(--slate-50);
-    color: var(--slate-900);
-    font-family: var(--font-body);
-}
-
-.topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 32px;
-    background: var(--white);
-    border-bottom: 1px solid var(--slate-200);
-}
-
-.topbar__back {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--slate-500);
-    text-decoration: none;
-}
-
-.topbar__back:hover {
-    color: var(--indigo-600);
-}
-
-.topbar__logo {
-    height: auto;
-    width: clamp(90px, 12vw, 130px);
-}
+/* FillPro — historial de uso. Requiere tokens.css y components.css. history.js no cambia. */
 
 .page {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 48px 24px 80px;
+    padding-bottom: var(--space-20);
 }
 
-.page__title {
-    margin: 0 0 8px;
-    font-family: var(--font-display);
-    font-size: clamp(24px, 3vw, 30px);
-    font-weight: 700;
+.history {
+    overflow: hidden;
 }
 
-.page__subtitle {
-    margin: 0 0 32px;
-    color: var(--slate-500);
-    font-size: 15px;
-    line-height: 1.6;
-    max-width: 52ch;
-}
-
-/* ---------- Barra superior del historial ---------- */
+/* ── Barra superior ── */
 
 .history-toolbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 16px;
+    gap: var(--space-4);
+    min-height: 4rem;
+    padding: var(--space-3) var(--space-6);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .history-toolbar__count {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--slate-500);
+    color: var(--text-secondary);
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
 }
+
+.history-toolbar__count:empty::before {
+    content: "Autocompletados";
+}
+
+/* ── Estado (cargando, vacío, error, borrado) ── */
 
 .history-status {
-    margin: 0 0 16px;
-    font-size: 14px;
-    color: var(--slate-500);
+    display: grid;
+    justify-items: center;
+    gap: var(--space-3);
+    padding: var(--space-16) var(--space-6);
+    color: var(--text-secondary);
+    font-size: var(--text-md);
+    line-height: var(--leading-relaxed);
+    text-align: center;
 }
 
-.history-status:empty {
+/* Ilustración del estado vacío con el icono de historial */
+.history-status::before {
+    content: "";
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: var(--space-2);
+    border-radius: var(--radius-lg);
+    background-color: var(--primary-50);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='%233730A3' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 12a8.5 8.5 0 1 0 2.5-6'/%3E%3Cpath d='M3.5 4.5V8H7'/%3E%3Cpath d='M12 8v4.2l2.8 1.8'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.history-status:empty,
+.history-status:has(~ .history-list:not(:empty)):empty {
+    display: none !important;
+}
+
+/* Mientras hay elementos en la lista, el estado (p. ej. "borrado correctamente") es una línea simple */
+.history-list:not(:empty) ~ .history-status,
+.history-status:has(~ .history-list:not(:empty)) {
+    display: block;
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--text-sm);
+    text-align: left;
+}
+
+.history-status:has(~ .history-list:not(:empty))::before {
     display: none;
 }
 
-/* ---------- Lista ---------- */
+/* ── Lista ── */
 
 .history-list {
-    list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    list-style: none;
+}
+
+.history-list:empty {
+    display: none;
 }
 
 .history-item {
-    padding: 18px 22px;
-    background: var(--white);
-    border: 1px solid var(--slate-200);
-    border-radius: var(--radius-lg);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--space-4);
+    row-gap: var(--space-1);
+    padding: var(--space-5) var(--space-6);
+    animation: reveal var(--duration-slow) var(--ease-out) both;
+}
+
+.history-item + .history-item {
+    border-top: 1px solid var(--border-subtle);
+}
+
+.history-item:nth-child(2) { animation-delay: 40ms; }
+.history-item:nth-child(3) { animation-delay: 80ms; }
+.history-item:nth-child(4) { animation-delay: 120ms; }
+.history-item:nth-child(n + 5) { animation-delay: 160ms; }
+
+/* Icono del sitio (globo) en la primera columna */
+.history-item::before {
+    content: "";
+    grid-row: 1 / span 3;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-md);
+    background-color: var(--primary-50);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%232D2D8F' stroke-width='1.75' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3 12h18'/%3E%3Cpath d='M12 3c2.5 2.6 3.7 5.6 3.7 9s-1.2 6.4-3.7 9c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3Z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .history-item__website {
-    margin: 0 0 4px;
+    grid-column: 2;
+    margin: 0;
     font-family: var(--font-display);
-    font-size: 17px;
-    font-weight: 600;
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-snug);
     overflow-wrap: anywhere;
 }
 
 .history-item__date {
-    font-size: 13px;
-    color: var(--slate-500);
+    grid-column: 2;
+    color: var(--text-tertiary);
+    font-size: var(--text-sm);
 }
 
 .history-item__fields {
-    list-style: none;
-    margin: 12px 0 0;
-    padding: 0;
+    grid-column: 2;
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: var(--space-2);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
 }
 
 .history-item__fields li {
-    padding: 4px 10px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--indigo-900);
-    background: var(--indigo-50);
-    border-radius: 999px;
-}
-
-/* ---------- Botones ---------- */
-
-.btn {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: var(--radius-md);
-    padding: 10px 18px;
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    min-height: 1.75rem;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-full);
+    background: var(--surface-2);
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
 }
 
-.btn--danger {
-    background: var(--white);
-    color: var(--red-700);
-    border-color: var(--slate-200);
-}
-
-.btn--danger:hover:not(:disabled) {
-    background: var(--red-50);
-    border-color: var(--red-700);
-}
-
-.btn:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-.btn:active:not(:disabled) {
-    transform: translateY(1px);
-}
-
-.btn:focus-visible,
-.topbar__back:focus-visible {
-    outline: 2px solid var(--indigo-600);
-    outline-offset: 2px;
-}
-
-@media (max-width: 560px) {
-    .topbar {
-        padding: 16px 20px;
+@media (max-width: 640px) {
+    .history-toolbar,
+    .history-item {
+        padding-inline: var(--space-4);
     }
 
-    .history-toolbar {
-        flex-direction: column;
-        align-items: flex-start;
+    .history-item::before {
+        width: 2.25rem;
+        height: 2.25rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .history-item {
+        animation: none;
     }
 }
