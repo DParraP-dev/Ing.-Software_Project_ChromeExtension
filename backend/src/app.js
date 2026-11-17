@@ -11,20 +11,27 @@ const app = express();
 // (lista separada por comas con la URL del frontend desplegado). Si la
 // variable no está definida (desarrollo local), se permite cualquier origen.
 //
-// Las peticiones de la extensión y del frontend abierto como archivo pueden
-// llegar sin cabecera Origin o con "null"; esas siempre se permiten, o se
-// rompería el autocompletado.
+// Siempre se permiten:
+//   - Peticiones sin cabecera Origin (terminal, apps nativas, same-origin).
+//   - La extensión del navegador, que envía Origin "chrome-extension://..."
+//     (o "moz-extension://..."); sin esto se rompería el autocompletado.
 const allowedOrigins = (process.env.CORS_ORIGINS || "")
     .split(",")
     .map((origin) => origin.trim())
     .filter(Boolean);
 
+function isAllowedOrigin(origin) {
+    if (!origin) return true;                          // sin Origin: terminal, apps nativas
+    if (/^(chrome|moz)-extension:\/\//.test(origin)) return true; // la extensión FillPro
+    if (allowedOrigins.length === 0) return true;      // sin lista: desarrollo local
+    return allowedOrigins.includes(origin);
+}
+
 const corsOptions = {
+    // Un origen no permitido NO lanza error (eso devolvía un 500 con HTML);
+    // simplemente no se añaden las cabeceras CORS y el navegador bloquea.
     origin(origin, callback) {
-        if (allowedOrigins.length === 0 || !origin || allowedOrigins.includes(origin)) {
-            return callback(null, true);
-        }
-        return callback(new Error("Origen no permitido por CORS"));
+        callback(null, isAllowedOrigin(origin));
     }
 };
 
