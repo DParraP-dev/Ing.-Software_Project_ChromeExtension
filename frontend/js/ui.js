@@ -6,7 +6,7 @@
 (function (global) {
     "use strict";
 
-    const ICONS = "../assets/icons.svg";
+    const ICONS = "";  // los iconos están en línea en cada página (svg.icon-sprite)
 
     function icon(name, extraClass = "") {
         const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");

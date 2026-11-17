@@ -64,31 +64,53 @@ body {
     background: var(--surface-0);
 }
 
-/* Fragmento del popup real: estados por campo */
+/* Fragmento del popup real: cada campo pasa de "Revisando" a su estado */
 .hero__card {
     position: absolute;
-    left: calc(-1 * var(--space-6));
-    bottom: var(--space-12);
+    left: calc(-1 * var(--space-8));
+    bottom: var(--space-10);
     display: grid;
     gap: var(--space-2);
+    width: 15.5rem;
     padding: var(--space-4);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     background: var(--surface-0);
     box-shadow: var(--shadow-2);
     font-size: var(--text-sm);
-    font-weight: var(--weight-medium);
+}
+
+.hero__card-title {
+    margin-bottom: var(--space-1);
+    color: var(--text-tertiary);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
 }
 
 .hero__card-row {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: var(--space-3);
+    min-height: 1.75rem;
+    font-weight: var(--weight-medium);
 }
 
-.hero__card .badge {
-    min-width: 4.75rem;
+/* Las dos insignias ocupan la misma celda: así el texto queda centrado siempre */
+.hero__card-state {
+    display: grid;
+    flex: none;
+    width: 6rem;
+}
+
+.hero__card-state > .badge {
+    grid-area: 1 / 1;
     justify-content: center;
+    width: 100%;
+}
+
+.hero__card-pending {
+    opacity: 0;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -98,18 +120,25 @@ body {
 
     .hero__copy > :nth-child(2) { animation-delay: 60ms; }
     .hero__copy > :nth-child(3) { animation-delay: 120ms; }
+    .hero__copy > :nth-child(4) { animation-delay: 180ms; }
 
     .hero__card {
-        animation: card-in 500ms var(--ease-out) 250ms both;
+        animation: card-in 600ms var(--ease-out) 250ms both, card-float 6s ease-in-out 1.2s infinite;
     }
 
-    .hero__card-row {
-        animation: reveal var(--duration-slow) var(--ease-out) both;
+    .hero__card-pending {
+        animation: state-pending 5.6s var(--ease-out) infinite;
+        animation-delay: calc(0.6s + var(--i) * 0.45s);
     }
 
-    .hero__card-row:nth-child(1) { animation-delay: 450ms; }
-    .hero__card-row:nth-child(2) { animation-delay: 530ms; }
-    .hero__card-row:nth-child(3) { animation-delay: 610ms; }
+    .hero__card-done {
+        animation: state-done 5.6s var(--ease-out) infinite;
+        animation-delay: calc(0.6s + var(--i) * 0.45s);
+    }
+
+    .main-image {
+        animation: image-drift 9s ease-in-out infinite alternate;
+    }
 }
 
 @keyframes card-in {
@@ -117,6 +146,50 @@ body {
         opacity: 0;
         transform: translateY(12px) scale(0.97);
     }
+}
+
+@keyframes card-float {
+    50% { transform: translateY(-6px); }
+}
+
+/* Ciclo: revisando (0–20 %) → estado final (20–85 %) → reinicio */
+@keyframes state-pending {
+    0%, 18% { opacity: 1; transform: none; }
+    24%, 90% { opacity: 0; transform: scale(0.94); }
+    100% { opacity: 1; transform: none; }
+}
+
+@keyframes state-done {
+    0%, 18% { opacity: 0; transform: scale(0.94); }
+    24%, 90% { opacity: 1; transform: none; }
+    100% { opacity: 0; transform: scale(0.94); }
+}
+
+@keyframes image-drift {
+    to { transform: translateY(-8px) scale(1.01); }
+}
+
+/* Lo que hace FillPro, bajo los botones */
+.hero__facts {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-6) 0 0;
+    padding: var(--space-6) 0 0;
+    border-top: 1px solid var(--border-subtle);
+    list-style: none;
+}
+
+.hero__facts li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--text-secondary);
+    font-size: var(--text-base);
+    font-weight: var(--weight-medium);
+}
+
+.hero__facts .icon {
+    color: var(--accent-700);
 }
 
 /* ── Pasos ── */
@@ -135,18 +208,20 @@ body {
 .steps__list {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-10);
+    gap: var(--space-6);
     margin: 0;
     padding: 0;
     list-style: none;
-    counter-reset: step;
 }
 
 .step {
     display: grid;
     align-content: start;
     gap: var(--space-3);
-    counter-increment: step;
+    padding: var(--space-8);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface-0);
 }
 
 .step__icon {
@@ -169,7 +244,6 @@ body {
 }
 
 .step__text {
-    max-width: 34ch;
     color: var(--text-secondary);
     font-size: var(--text-md);
     line-height: var(--leading-relaxed);
@@ -273,23 +347,53 @@ body {
 /* ── Pie ── */
 
 .footer {
-    padding-block: var(--space-8);
+    padding-block: var(--space-12) var(--space-8);
     background: var(--primary-900);
     color: var(--primary-200);
     font-size: var(--text-sm);
 }
 
 .footer__inner {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
+    gap: var(--space-8) var(--space-6);
+}
+
+.footer__brand {
+    display: grid;
     gap: var(--space-3);
 }
 
-.footer__mark {
-    width: 1.25rem;
+.footer__logo {
+    width: 7rem;
     height: auto;
-    filter: brightness(0) invert(1);
-    opacity: 0.85;
+}
+
+.footer__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+}
+
+.footer__nav a {
+    color: var(--surface-0);
+    font-weight: var(--weight-medium);
+    text-decoration: none;
+}
+
+.footer__nav a:hover {
+    text-decoration: underline;
+}
+
+.footer :focus-visible {
+    outline-color: var(--surface-0);
+}
+
+.footer__legal {
+    grid-column: 1 / -1;
+    padding-top: var(--space-6);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 /* ── Responsive ── */
@@ -307,6 +411,10 @@ body {
 
     .hero__card {
         left: var(--space-4);
+    }
+
+    .hero__visual {
+        justify-self: center;
     }
 
     .steps__list {
@@ -338,6 +446,16 @@ body {
 
     .hero__card {
         bottom: var(--space-4);
+        left: var(--space-2);
+        width: 14rem;
+    }
+
+    .step {
+        padding: var(--space-6);
+    }
+
+    .footer__inner {
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .steps,

@@ -37,7 +37,7 @@
             input.type = show ? "text" : "password";
             toggle.setAttribute("aria-pressed", String(show));
             toggle.setAttribute("aria-label", show ? "Ocultar contraseña" : "Mostrar contraseña");
-            use.setAttribute("href", `../assets/icons.svg#i-${show ? "eye-off" : "eye"}`);
+            use.setAttribute("href", `#i-${show ? "eye-off" : "eye"}`);
         });
     }
 

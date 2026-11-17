@@ -686,6 +686,11 @@ a:hover {
     color: var(--error-text);
 }
 
+.badge--muted {
+    background: var(--surface-2);
+    color: var(--text-secondary);
+}
+
 .badge--info,
 .badge--primary {
     background: var(--info-bg);
@@ -994,5 +999,55 @@ a:hover {
 
     .btn[aria-busy="true"]::after {
         animation: spin 1.4s linear infinite !important;
+    }
+}
+
+/* ═════════════ Iconos en línea ═════════════ */
+
+.icon-sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+/* ═════════════ Movimiento al hacer scroll (js/motion.js) ═════════════
+ * Sin JavaScript o con movimiento reducido, el contenido se ve normal:
+ * solo se oculta cuando motion.js marca <html class="js-motion">. */
+
+.js-motion [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+    transition-delay: calc(var(--i, 0) * 90ms);
+}
+
+.js-motion [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+.topbar {
+    transition: box-shadow var(--duration-base) var(--ease-out),
+        border-color var(--duration-base) var(--ease-out);
+}
+
+.topbar.is-scrolled {
+    border-bottom-color: var(--border-subtle);
+    box-shadow: var(--shadow-1);
+}
+
+/* Elevación suave al pasar el cursor por tarjetas que llevan a otra parte */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .lift {
+        transition: transform var(--duration-base) var(--ease-out),
+            box-shadow var(--duration-base) var(--ease-out),
+            border-color var(--duration-base) var(--ease-out);
+    }
+
+    .lift:hover {
+        transform: translateY(-3px);
+        border-color: var(--border-default);
+        box-shadow: var(--shadow-2);
     }
 }
